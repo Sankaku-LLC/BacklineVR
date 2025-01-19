@@ -2688,18 +2688,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Knight
       objectReference: {fileID: 0}
-    - target: {fileID: 4458768947254507479, guid: 27ff102e45104d747acf92aaad391b6f, type: 3}
-      propertyPath: MaxHealth
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4458768947254507479, guid: 27ff102e45104d747acf92aaad391b6f, type: 3}
-      propertyPath: MeleeAttackDmg
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4765310530612314331, guid: 27ff102e45104d747acf92aaad391b6f, type: 3}
-      propertyPath: maxStagger
-      value: 100
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

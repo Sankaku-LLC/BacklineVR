@@ -1,3 +1,4 @@
+using BacklineVR.Characters;
 using BacklineVR.Interaction;
 using BacklineVR.Interaction.Bow;
 using System.Collections;
@@ -6,7 +7,7 @@ using UnityEngine;
 using AttachmentFlags = BacklineVR.Interaction.Hand.AttachmentFlags;
 namespace BacklineVR.Core
 {
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, ITargetable, IDestructible
     {
         public static Player Instance;
         public Transform Head;
@@ -25,7 +26,9 @@ namespace BacklineVR.Core
         private Hand _rightHand;
 
         private AttachmentFlags _flags = AttachmentFlags.SnapOnAttach | AttachmentFlags.ParentToHand | AttachmentFlags.TurnOnKinematic | AttachmentFlags.TurnOffGravity | AttachmentFlags.AllowSidegrade;
-
+        public GameObject GetGameObject() => this.gameObject;
+        public Transform GetMainTransform() => this.transform;
+        public virtual TargetType GetTargetType() => TargetType.Player;
         private void Awake()
         {
             Instance = this;
@@ -42,5 +45,10 @@ namespace BacklineVR.Core
         {
 
         }
+        public void TakeDamage(float damageAmount)
+        {
+        }
+        public bool IsDestroyed();
+        public bool IsStaggered();
     }
 }
