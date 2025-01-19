@@ -1,14 +1,13 @@
+using CurseVR.Director;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR;
-using static UnityEngine.Rendering.DebugUI;
 using CallbackContext = UnityEngine.InputSystem.InputAction.CallbackContext;
 namespace BacklineVR.Interaction
 {
-    public class InputProvider : MonoBehaviour
+    public class InputProvider : MonoBehaviour, IGlobalComponent
     {
 
         private enum Device { HMD, LeftHand, RightHand }
@@ -21,7 +20,8 @@ namespace BacklineVR.Interaction
             Trigger,
             Grip,
             Move,
-            Haptic
+            Haptic,
+            PrimaryButton
         }
         [SerializeField]
         private InputActionAsset _inputActions;
@@ -44,15 +44,24 @@ namespace BacklineVR.Interaction
         public Action<HandSide> OnTriggerUp;
         public Action<HandSide, float> OnGripDown;
         public Action<HandSide> OnGripUp;
+        public Action<HandSide> OnPrimaryButtonDown;
         public Action<Vector2> OnControlPad;
 
         private bool[] _isGripDown = new bool[2];
         private bool[] _isTriggerDown = new bool[2];
-
-        private protected void Awake()
+        public void OnInitialize()
         {
             _bindings = new Dictionary<string, List<Action<CallbackContext>>>();
+        }
+
+        public void OnStart()
+        {
             SetupActions();
+        }
+
+        public Type GetManagerType()
+        {
+            return typeof(InputProvider);
         }
         private void SetupActions()
         {
@@ -74,6 +83,9 @@ namespace BacklineVR.Interaction
             Action<CallbackContext> triggerPerformed = (CallbackContext context) => OnTriggerDownEvent(hand, context.ReadValue<float>());
             Action<CallbackContext> triggerCanceled = (CallbackContext _) => OnTriggerUpEvent(hand);
             SetupBinding(deviceHand, ActionCode.Trigger, triggerPerformed, triggerCanceled);
+
+            Action<CallbackContext> secondaryPerformed = (CallbackContext context) => OnPrimaryButtonDown?.Invoke(hand);
+            SetupBinding(deviceHand, ActionCode.PrimaryButton, secondaryPerformed);
 
             Action<CallbackContext> positionPerformed = (CallbackContext context) => OnPositionUpdated(hand, context);
             SetupBinding(deviceHand, ActionCode.Position, positionPerformed);

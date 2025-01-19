@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OtherHand: {fileID: 3913557393326905019}
   HandSide: 1
-  _inputProvider: {fileID: 4817317482355686724}
+  _inputProvider: {fileID: 0}
   hoverSphereTransform: {fileID: 2382813490336939609}
   hoverSphereRadius: 0.075
   hoverLayerMask:
@@ -414,7 +414,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1473612737010122200}
   - component: {fileID: 2713697842277442388}
-  - component: {fileID: 4817317482355686724}
   - component: {fileID: 8697081227902176077}
   m_Layer: 0
   m_Name: XR Origin (VR)
@@ -456,22 +455,6 @@ MonoBehaviour:
   m_CameraFloorOffsetObject: {fileID: 2700522404029598695}
   m_RequestedTrackingOriginMode: 2
   m_CameraYOffset: 1.1176
---- !u!114 &4817317482355686724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4170934771883398101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2ae4517f3086f24c815695fda297c14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _inputActions: {fileID: -944628639613478452, guid: c2cb02a3d0542c34f98ff2ebb5a14bf9, type: 3}
-  _snapTurnAngle: 45
-  _leftHand: {fileID: 8190157810128951704}
-  _rightHand: {fileID: 5809133533129700556}
 --- !u!114 &8697081227902176077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,7 +585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OtherHand: {fileID: 5386021140594152086}
   HandSide: 0
-  _inputProvider: {fileID: 4817317482355686724}
+  _inputProvider: {fileID: 0}
   hoverSphereTransform: {fileID: 2746964322008270921}
   hoverSphereRadius: 0.075
   hoverLayerMask:
