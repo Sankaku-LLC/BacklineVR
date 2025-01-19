@@ -12,8 +12,11 @@ public class GenericCharacter : MonoBehaviour, ITargetable
     public ITargetable Target { private set; get; }
     public virtual float MeleeReach => 2f;
     public virtual float MovemntSpeed => 2f;
+    [SerializeField]
+    private HealthBarUI _healthBarUI;    
     private NavMeshAgent _nav;
     private bool isMobile;
+
     public virtual void Start()
     {
         _nav = GetComponent<NavMeshAgent>();
@@ -21,6 +24,27 @@ public class GenericCharacter : MonoBehaviour, ITargetable
         OnInitialized();
     }
     public virtual void OnInitialized()
+    {
+
+    }
+   
+
+    void Update()
+    {
+        if (!isMobile)
+            return;
+
+        MoveToTarget();
+    }
+    public void TakeDamage(float damageAmount)
+    {
+
+    }
+    public void RecoverHealth(float healAmount)
+    {
+       // _healthBarUI.HealDamage()
+    }
+    private void UpdateHealthBar()
     {
 
     }
@@ -34,17 +58,9 @@ public class GenericCharacter : MonoBehaviour, ITargetable
     }
     public void StartMovement()
     {
-        
         isMobile = true;
     }
 
-    void Update()
-    {
-        if (!isMobile)
-            return;
-
-        MoveToTarget();
-    }
     private void MoveToTarget()
     {
         _nav.SetDestination(Target.GetMainTransform().position);
