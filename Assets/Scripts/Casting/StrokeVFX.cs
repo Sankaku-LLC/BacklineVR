@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CurseVR.SymbolSystem;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -16,6 +17,7 @@ namespace CurseVR.Core.Casting
         private VisualEffect _vfx;
         private ParticleSystem _ps;
         private float _spawnTime;
+        private readonly Particle[] _particles = new Particle[1024];
         private void Awake()
         {
             _vfx = GetComponent<VisualEffect>();
@@ -38,26 +40,27 @@ namespace CurseVR.Core.Casting
         }
         private Stroke GetStroke()
         {
-            ParticleSystem ps = gameObject.GetComponent<ParticleSystem>();
-            if (ps.particleCount < SymbolProcessor.MINPOINTS)
+            var particleCount = _ps.GetParticles(_particles);
+            if(particleCount < SymbolProcessor.MINPOINTS)
+            {
                 return null;
-
-            Particle[] data = new Particle[ps.particleCount];
-            ps.GetParticles(data);
+            }
 
             var segmentData = new List<Vector>();
-            Array.Sort(data, Comparer<Particle>.Create((x, y) => Math.Sign(x.remainingLifetime - y.remainingLifetime)));
+            Array.Sort(_particles, 0, particleCount, Comparer<Particle>.Create((x, y) => Math.Sign(x.remainingLifetime - y.remainingLifetime)));
 
-            foreach (Particle p in data)
+
+            for(var i=0; i< particleCount; i++)
             {
-                Vector3 pos = Camera.main.transform.InverseTransformPoint(p.position);
+                Vector3 pos = Camera.main.transform.InverseTransformPoint(_particles[i].position);
                 segmentData.Add(new Vector(pos));
             }
+
             return new Stroke(segmentData);
         }
         public void Destroy(Transform casterTransform, float time)
         {
-            if(Mathf.Approximately(time, 0))
+            if (Mathf.Approximately(time, 0))
             {
                 ForceDestroy();
                 return;

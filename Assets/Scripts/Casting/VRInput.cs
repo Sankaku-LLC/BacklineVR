@@ -26,22 +26,28 @@ namespace BacklineVR.Casting
         private protected Vector3 _cursorPos;//Used to cache the current pos in case we spawn and need coords to spawn it at (moving after spawning will generate points)
         private protected StrokeCapture _activeCapture;
 
-
         public static MirrorSettings ActiveMirrorSettings;
         public Action OnStrokeStart;
         public Action OnStrokeEnd;
         public Action OnCast;
+        public Action<ClassificationResult> OnSymbolCast;
 
         [SerializeField]
         private HandSide _handSide = HandSide.Right;
 
         private SymbolApplication _symbolApp;
+
+        public static VRInput Caster;
+
+        private List<string> _spellNames = new List<string> { "Fire", "Light", "Heal" };
         private protected virtual void Awake()
         {
             _strokeData = new List<StrokeCapture>();
+            Caster = this;
         }
         public void Start()
         {
+            _symbolApp = GlobalDirector.Get<SymbolApplication>();
             var inputProvider = GlobalDirector.Get<InputProvider>();
             inputProvider.OnPrimaryButtonDown += OnProcess;
             inputProvider.OnTriggerDown += OnTriggerDown;
@@ -56,7 +62,7 @@ namespace BacklineVR.Casting
         }
         private void OnTriggerDown(HandSide hand, float value)
         {
-            if (hand == _handSide)
+            if (hand == _handSide && !_drawing)
             {
                 BeginStroke();
             }
@@ -72,20 +78,24 @@ namespace BacklineVR.Casting
         {
             if (hand == _handSide)
             {
-                Debug.LogError("PROCESSS!");
                 var successfulCast = TryCastSymbol(out var cast);
                 if (!successfulCast)
                 {
-                    Debug.LogError("UNSUCCESS CAST");
+                    var defaultResult = new ClassificationResult();
+                    defaultResult.MatchName = "Default";
+                    OnSymbolCast?.Invoke(defaultResult);
                     return;
                 }
-                var successfulClassification = _symbolApp.TryClassify(SymbolPool.Curse, cast, out var result);
+                //_symbolApp.Save(SymbolPool.Curse, _spellNames[0], cast);
+                //_spellNames.RemoveAt(0);
+                var successfulClassification =  _symbolApp.TryClassify(SymbolPool.Curse, cast, out var result);
+                if (!successfulClassification)
+                    result.MatchName = "Default";
+                OnSymbolCast?.Invoke(result);
                 if (!successfulClassification)
                 {
-                    Debug.LogError("UNSUCCESS CLASS");
                     return;
                 }
-                Debug.LogError("SUCCESFUL CAST! " + result.MatchName + " " + result.MatchPercent);
                 ClearSingleStrokeData();
             }
         }
@@ -99,7 +109,6 @@ namespace BacklineVR.Casting
             //if clicked Trigger before Grip, immediately stop 
             if (_drawing)
                 TryEndStroke();
-            Debug.LogError("Stroke data length " + _strokeData.Count);
 
             if (_strokeData.Count > 0)
             {
@@ -139,7 +148,6 @@ namespace BacklineVR.Casting
         /// </summary>
         public bool TryEndStroke()
         {
-            Debug.LogError("Trying to end stroke");
             if (!_drawing || _activeCapture == null)
                 return false;
 
@@ -154,7 +162,6 @@ namespace BacklineVR.Casting
             }
             _strokeData.Add(_activeCapture);
             _activeCapture = null;
-            Debug.LogError("Stroke data length " + _strokeData.Count);
             return true;
         }
         private SymbolData GetSingle()

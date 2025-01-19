@@ -9,6 +9,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using BacklineVR.Core;
+using BacklineVR.Casting;
+using CurseVR.SymbolSystem;
 
 namespace BacklineVR.Interaction.Bow
 {
@@ -27,9 +29,17 @@ namespace BacklineVR.Interaction.Bow
 		private Longbow bow;
 
 		private GameObject currentArrow;
-		public GameObject arrowPrefab;
 
-		public Transform arrowNockTransform;
+        [SerializeField]
+        private GameObject _forceArrow;
+        [SerializeField]
+        private GameObject _fireArrow;
+        [SerializeField]
+		private GameObject _divineArrow;
+        [SerializeField]
+        private GameObject _lifeArrow;
+
+        public Transform arrowNockTransform;
 
 		public float nockDistance = 0.1f;
 		public float lerpCompleteDistance = 0.08f;
@@ -53,11 +63,22 @@ namespace BacklineVR.Interaction.Bow
 		void Awake()
 		{
 			arrowList = new List<GameObject>();
-		}
+        }
+        private void Start()
+        {
+			VRInput.Caster.OnSymbolCast += OnSymbolCast;
+        }
+        private void OnSymbolCast(ClassificationResult result)
+		{
+			if (!allowArrowSpawn || currentArrow != null)
+				return;
+            arrowSpawnSound.Play();
+            Debug.LogError("SUCCESFUL CAST! " + result.MatchName + " " + result.MatchPercent);
+			currentArrow = InstantiateArrow(result.MatchName);
+        }
 
-
-		//-------------------------------------------------
-		private void OnAttachedToHand( Hand attachedHand )
+        //-------------------------------------------------
+        private void OnAttachedToHand( Hand attachedHand )
 		{
 			hand = attachedHand;
 			FindBow();
@@ -65,10 +86,29 @@ namespace BacklineVR.Interaction.Bow
 
 
 		//-------------------------------------------------
-		private GameObject InstantiateArrow()
+		private GameObject InstantiateArrow(string spellName)
 		{
-			GameObject arrow = Instantiate( arrowPrefab, arrowNockTransform.position, arrowNockTransform.rotation ) as GameObject;
-			arrow.name = "Bow Arrow";
+			GameObject targetPrefab;
+            if (spellName == "Heal")
+            {
+				targetPrefab = _lifeArrow;
+            }
+            else if (spellName == "Light")
+            {
+                targetPrefab = _divineArrow;
+
+            }
+            else if (spellName == "Fire")
+            {
+				targetPrefab = _fireArrow;
+            }
+            else
+            {
+				targetPrefab = _forceArrow;
+            }
+
+            GameObject arrow = Instantiate( targetPrefab, arrowNockTransform.position, arrowNockTransform.rotation ) as GameObject;
+			arrow.name = "Arrow of " + spellName;
 			arrow.transform.parent = arrowNockTransform;
 			Util.ResetTransform( arrow.transform );
 
@@ -101,11 +141,8 @@ namespace BacklineVR.Interaction.Bow
 				return;
 			}
 
-			if ( allowArrowSpawn && ( currentArrow == null ) ) // If we're allowed to have an active arrow in hand but don't yet, spawn one
-			{
-				currentArrow = InstantiateArrow();
-				arrowSpawnSound.Play();
-			}
+			if (currentArrow == null)
+				return;
 
 			float distanceToNockPosition = Vector3.Distance( transform.parent.position, bow.nockTransform.position );
 
@@ -173,16 +210,11 @@ namespace BacklineVR.Interaction.Bow
 					}
 				}
 
-                GrabTypes bestGrab = hand.GetBestGrabbingType(GrabTypes.Pinch, true);
+                GrabTypes bestGrab = hand.GetBestGrabbingType(GrabTypes.Grip, true);
 
-                // If arrow is close enough to the nock position and we're pressing the trigger, and we're not nocked yet, Nock
+                // If arrow is close enough to the nock position and we're pressing the grip, and we're not nocked yet, Nock
                 if ( ( distanceToNockPosition < nockDistance ) && bestGrab != GrabTypes.None && !nocked )
 				{
-					if ( currentArrow == null )
-					{
-						currentArrow = InstantiateArrow();
-					}
-
 					nocked = true;
                     nockedWithType = bestGrab;
 					bow.StartNock( this );

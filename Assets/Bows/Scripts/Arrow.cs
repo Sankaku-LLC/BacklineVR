@@ -15,6 +15,10 @@ namespace BacklineVR.Interaction.Bow
     public class Arrow : MonoBehaviour
     {
         public ParticleSystem glintParticle;
+
+        [SerializeField]
+        private GameObject _strikePS;
+
         public Rigidbody arrowHeadRB;
         public Rigidbody shaftRB;
 
@@ -113,7 +117,7 @@ namespace BacklineVR.Interaction.Bow
             {
                 Rigidbody rb = GetComponent<Rigidbody>();
                 float rbSpeed = rb.velocity.sqrMagnitude;
-                bool canStick = (targetPhysMaterial != null && collision.collider.sharedMaterial == targetPhysMaterial && rbSpeed > 0.2f);
+                bool canStick = true;// (targetPhysMaterial != null && collision.collider.sharedMaterial == targetPhysMaterial && rbSpeed > 0.2f);
                 
                 
                 
@@ -148,11 +152,11 @@ namespace BacklineVR.Interaction.Bow
                 // always pop balloons
                 if (rbSpeed > 0.1f || goThrough)
                 {
-                    Debug.LogError("DEAL DAMAGE");//////////////////////////////////////////////////////
                     var gobby = collision.gameObject.GetComponent<IDestructible>();
                     if (gobby == null)
                         return;
                     gobby.TakeDamage(5 * Mathf.InverseLerp(0.1f,30,prevVelocity.magnitude));
+                    _strikePS.SetActive(true);
                 }
 
                 if (goThrough)
