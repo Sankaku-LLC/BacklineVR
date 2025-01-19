@@ -8,21 +8,32 @@ public class HealthBarUI : MonoBehaviour
 {
     [SerializeField]
     private float currHealth;
-    public float maxHealth = 100f;
+    public float maxHealth;
     private float lerpTimer;
     public float lerpSpeed = 100f;
+    [SerializeField]
+    private Image border;
     [SerializeField]
     private Image frontHealthBar;
     [SerializeField]
     private Image backHealthBar;
+    [SerializeField]
+    private Color _regularHitColor, _criticalHitColor;
+    private bool _isCrit;
+    private CanvasGroup _canvasGroup;
+    private void Start()
+    {
+        _canvasGroup = GetComponent<CanvasGroup>();
+    }
     public void SetMaxHealth(float newMaxHealth)
     {
         maxHealth = newMaxHealth;
         currHealth = maxHealth;
     }
-    public void TakeDamage(float damage)
+    public void SetHealth(float damage, bool critical)
     {
-        currHealth -= damage;
+        _isCrit = critical;
+        currHealth = damage;
         lerpTimer = 0f;
     }
     [ContextMenu("AddHealth")]
@@ -33,7 +44,7 @@ public class HealthBarUI : MonoBehaviour
     [ContextMenu("RemoveHealth")]
     public void RemoveHealthTest()
     {
-        TakeDamage(30f);
+        SetHealth(30f,false);
     }
     public void RecoverHealth(float heal)
     {
@@ -50,10 +61,17 @@ public class HealthBarUI : MonoBehaviour
         float fillMain = frontHealthBar.fillAmount;
         float fillBack = backHealthBar.fillAmount;
         float healthPercent = currHealth / maxHealth;
+        if (currHealth <= 0 ) {
+            lerpTimer += Time.deltaTime;
+            float percentComplete = lerpTimer / lerpSpeed;
+            percentComplete = Mathf.Clamp(percentComplete, 0, 1);
+            percentComplete = Mathf.Sqrt(2 * percentComplete - (percentComplete * percentComplete));
+            _canvasGroup.alpha = Mathf.Lerp(_canvasGroup.alpha, 0, percentComplete);
+        }
         if(fillBack > healthPercent)
         {
-            frontHealthBar.fillAmount = healthPercent;
             backHealthBar.color = Color.red;
+            frontHealthBar.fillAmount = healthPercent;
             lerpTimer += Time.deltaTime;
             float percentComplete = lerpTimer / lerpSpeed;
             percentComplete = Mathf.Clamp(percentComplete, 0, 1);

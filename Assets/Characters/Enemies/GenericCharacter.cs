@@ -15,6 +15,7 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     public virtual float MeleeReach => 1f;
     public float MeleeAttackDmg = 5f;
     public float RandomVarience = 2f;
+    public float CritAttackDmg = 10f;
     public float MovemntSpeed = 2f;
     [SerializeField]
     private HealthBarUI _healthBarUI;
@@ -26,23 +27,29 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     private Animator _anim;
     public float MaxHealth = 100f;
     public float CurrentHealth;
+    public float MaxStaggerGauge = 100f;
+    public float CurrentStagger;
+    public float StaggerLerpTimer;
+    public float RecoverStaggerSpeed = 5f;
     private NavMeshAgent _nav;
-    private CharacterController _characterController;
     private Rigidbody _rb;
     private bool isMobile;
     private bool _isKilled;
+    private bool _isStaggered;
     public bool IsDestroyed() => _isKilled;
+    public bool IsStaggered() => _isStaggered;
 
     public virtual void Start()
     {
         _nav = GetComponent<NavMeshAgent>();
         _bt = GetComponent<BehaviorTree>();
         _rb = GetComponent<Rigidbody>();
-        _characterController = GetComponent<CharacterController>();
         _combatManager = CombatManager.CombatManagerInstance;
         CurrentHealth = MaxHealth;
+        CurrentStagger = 0f;
         _anim = GetComponent<Animator>();
         _healthBarUI.SetMaxHealth(MaxHealth);
+        _staggerBarUI.SetMaxStagger(MaxStaggerGauge);
         OnInitialized();
     }
     public virtual void OnInitialized()
@@ -53,6 +60,7 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
 
     void Update()
     {
+        UpdateStagger();
         if (!isMobile)
             return;
 
@@ -60,12 +68,58 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     }
     public void TakeDamage(float damageAmount)
     {
-        CurrentHealth -= damageAmount;
-        _healthBarUI.TakeDamage(damageAmount);
-        _staggerBarUI.TakeStagger(damageAmount+10);
+        bool isCritical = _isStaggered;
+        float CriticalDamage = isCritical ? CritAttackDmg : 0f;
+        float DamageCalc = damageAmount + CriticalDamage;
+        CurrentHealth -= DamageCalc;
+        CurrentStagger += DamageCalc + 10;
+
+        CheckHealth(isCritical);
+        UpdateStagger();
+    }
+    public void TakeDamage(float damageAmount, bool forceCrit)
+    {
+
+        bool isCritical = forceCrit || _isStaggered;
+        float CriticalDamage = isCritical ? CritAttackDmg : 0f;
+        float DamageCalc = damageAmount + CriticalDamage;
+        CurrentHealth -= DamageCalc;
+        CurrentStagger += DamageCalc + 10;
+        CheckHealth(isCritical);
+        UpdateStagger();
+    }
+    private void CheckHealth(bool isCritical)
+    {
+        _healthBarUI.SetHealth(CurrentHealth, isCritical);
         if (CurrentHealth < 0)
-            OnKilled();        
-        
+            OnKilled();
+    }
+    private void UpdateStagger()
+    {
+        if (_isStaggered)
+        {
+            if (StaggerLerpTimer >= RecoverStaggerSpeed)
+            {
+                CurrentStagger = 0f;
+                _staggerBarUI.SetStagger(CurrentStagger);
+                SetStaggered(false);
+                return;
+            }
+            StaggerLerpTimer += Time.deltaTime;
+            float percentComplete = StaggerLerpTimer / RecoverStaggerSpeed;
+            percentComplete = Mathf.Clamp(percentComplete, 0, 1);
+            CurrentStagger = Mathf.Lerp(MaxStaggerGauge, 0, percentComplete);
+            _staggerBarUI.SetStagger(CurrentStagger);
+          
+            return;
+        }
+        _staggerBarUI.SetStagger(CurrentStagger);
+        if (CurrentStagger >= MaxStaggerGauge)
+        {
+            CurrentStagger = MaxStaggerGauge;
+            SetStaggered(true);
+        }
+
     }
     public virtual void OnKilled()
     {
@@ -73,10 +127,17 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
         isMobile = false;
         _nav.enabled = false;
         _rb.isKinematic = true;
-        _characterController.enabled = false;
+        CurrentStagger = 0f;
+        _staggerBarUI.SetStagger(CurrentStagger);
         _anim.SetBool("IsKilled", true);
         _deathParticleEffect.Play();
         _bt.SendEvent("IsKilled");
+    }
+    public virtual void SetStaggered(bool staggered)
+    {
+        _isStaggered = staggered;
+        _staggerBarUI.SetStaggeredCondition(staggered);
+        StaggerLerpTimer = 0;
     }
     public void RecoverHealth(float healAmount)
     {

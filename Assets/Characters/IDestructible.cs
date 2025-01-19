@@ -8,9 +8,13 @@ namespace BacklineVR.Characters
         public void TakeDamage(float damageAmount)
         {
         }
+        public void TakeDamage(float damageAmount, bool forceCrit)
+        {
+        }
         public void RecoverHealth(float healAmount)
         {
         }
         public bool IsDestroyed();
+        public bool IsStaggered();
     }
 }
