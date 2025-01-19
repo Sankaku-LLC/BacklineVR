@@ -7,6 +7,7 @@
 using UnityEngine;
 using System.Collections;
 using BacklineVR.Core;
+using BacklineVR.Characters;
 
 namespace BacklineVR.Interaction.Bow
 {
@@ -148,6 +149,10 @@ namespace BacklineVR.Interaction.Bow
                 if (rbSpeed > 0.1f || goThrough)
                 {
                     Debug.LogError("DEAL DAMAGE");//////////////////////////////////////////////////////
+                    var gobby = collision.gameObject.GetComponent<IDestructible>();
+                    if (gobby == null)
+                        return;
+                    gobby.TakeDamage(5 * Mathf.InverseLerp(0.1f,30,prevVelocity.magnitude));
                 }
 
                 if (goThrough)
