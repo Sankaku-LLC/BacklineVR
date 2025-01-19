@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using BehaviorDesigner.Runtime;
 
 public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
 {
@@ -14,19 +15,27 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     public virtual float MeleeReach => 2f;
     public float MeleeAttackDmg = 5f;
     public float RandomVarience = 2f;
-    public virtual float MovemntSpeed => 2f;
+    public float MovemntSpeed = 2f;
     [SerializeField]
     private HealthBarUI _healthBarUI;
+    [SerializeField]
+    private ParticleSystem _deathParticleEffect;
+    private BehaviorTree _bt;
+    private Animator _anim;
     public float MaxHealth = 100f;
     public float CurrentHealth;
     private NavMeshAgent _nav;
     private bool isMobile;
+    private bool _isKilled;
+    public bool IsDestroyed() => _isKilled;
 
     public virtual void Start()
     {
         _nav = GetComponent<NavMeshAgent>();
+        _bt = GetComponent<BehaviorTree>();
         _combatManager = CombatManager.CombatManagerInstance;
         CurrentHealth = MaxHealth;
+        _anim = GetComponent<Animator>();
         OnInitialized();
     }
     public virtual void OnInitialized()
@@ -46,6 +55,16 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     {
         CurrentHealth -= damageAmount;
         _healthBarUI.TakeDamage(damageAmount);
+        if (CurrentHealth < 0)
+            OnKilled();        
+        
+    }
+    public virtual void OnKilled()
+    {
+        _isKilled = true;
+        _anim.SetBool("IsKilled", true);
+        _deathParticleEffect.Play();
+        _bt.SendEvent("IsKilled");
     }
     public void RecoverHealth(float healAmount)
     {

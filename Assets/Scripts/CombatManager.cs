@@ -37,6 +37,14 @@ public class CombatManager : MonoBehaviour
     public void OnAllySpawned(AllyCharacter ally) { 
         AllSpawnedAllies.Add(ally);
     }
+    public void OnEnemyKilled(EnemyCharacter enemy)
+    {
+        AllSpawnedEnemies.Remove(enemy);
+    }
+    public void OnAllyKilled(AllyCharacter ally)
+    {
+        AllSpawnedAllies.Remove(ally);
+    }
     public ITargetable GetClosestOfType(TargetType targetType, Vector3 curPosition)
     {
         switch (targetType)
