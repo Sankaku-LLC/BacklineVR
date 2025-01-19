@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using BacklineVR.Core;
 using BacklineVR.Interaction.Bow;
+using CurseVR.Director;
 
 namespace BacklineVR.Interaction
 {
@@ -45,7 +46,6 @@ namespace BacklineVR.Interaction
         public Hand OtherHand;
         public HandSide HandSide;
 
-        [SerializeField]
         private InputProvider _inputProvider;
 
         public Transform hoverSphereTransform;
@@ -149,6 +149,8 @@ namespace BacklineVR.Interaction
         //-------------------------------------------------
         private void Start()
         {
+            _inputProvider = GlobalDirector.Get<InputProvider>();
+
             // save off player instance
             playerInstance = Player.Instance;
             if (!playerInstance)

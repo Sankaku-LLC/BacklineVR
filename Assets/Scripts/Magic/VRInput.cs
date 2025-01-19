@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using BacklineVR.Interaction;
+using CurseVR.Director;
 using CurseVR.SymbolSystem;
 using UnityEngine;
 namespace BacklineVR.Casting
@@ -14,8 +16,6 @@ namespace BacklineVR.Casting
     /// </summary>
     public class VRInput : MonoBehaviour
     {
-        public static List<VRInput> Inputs = new List<VRInput>();
-
         [SerializeField]
         private protected Transform _casterTransform;
         [SerializeField]
@@ -25,69 +25,90 @@ namespace BacklineVR.Casting
         private protected bool _drawing = false;//Used to keep track if we're currently casting, so that we can terminate running strokes as needed
         private protected Vector3 _cursorPos;//Used to cache the current pos in case we spawn and need coords to spawn it at (moving after spawning will generate points)
         private protected StrokeCapture _activeCapture;
-        private int _inputIndex = 0;
 
 
         public static MirrorSettings ActiveMirrorSettings;
         public Action OnStrokeStart;
         public Action OnStrokeEnd;
         public Action OnCast;
-        private static VRInput _left;
-        private static VRInput _right;
 
         [SerializeField]
-        private bool _isLeft;
+        private HandSide _handSide = HandSide.Right;
+
+        private SymbolApplication _symbolApp;
         private protected virtual void Awake()
         {
             _strokeData = new List<StrokeCapture>();
-
-            _inputIndex = Inputs.Count;
-            Inputs.Add(this);
-            if (_isLeft)
-            {
-                _left = this;
-            }
-            else
-            {
-                _right = this;
-            }
         }
-        private protected void OnDestroy()
+        public void Start()
         {
-            Inputs.Remove(this);
+            var inputProvider = GlobalDirector.Get<InputProvider>();
+            inputProvider.OnPrimaryButtonDown += OnProcess;
+            inputProvider.OnTriggerDown += OnTriggerDown;
+            inputProvider.OnTriggerUp += OnTriggerUp;
+            inputProvider.OnUpdatePosition += OnUpdatePosition;
         }
-
+        private void OnUpdatePosition(HandSide hand, Vector3 position)
+        {
+            if (hand != _handSide)
+                return;
+            _cursorPos = position;
+        }
+        private void OnTriggerDown(HandSide hand, float value)
+        {
+            if (hand == _handSide)
+            {
+                BeginStroke();
+            }
+        }
+        private void OnTriggerUp(HandSide hand)
+        {
+            if (hand == _handSide)
+            {
+                TryEndStroke();
+            }
+        }
+        private void OnProcess(HandSide hand)
+        {
+            if (hand == _handSide)
+            {
+                Debug.LogError("PROCESSS!");
+                var successfulCast = TryCastSymbol(out var cast);
+                if (!successfulCast)
+                {
+                    Debug.LogError("UNSUCCESS CAST");
+                    return;
+                }
+                var successfulClassification = _symbolApp.TryClassify(SymbolPool.Curse, cast, out var result);
+                if (!successfulClassification)
+                {
+                    Debug.LogError("UNSUCCESS CLASS");
+                    return;
+                }
+                Debug.LogError("SUCCESFUL CAST! " + result.MatchName + " " + result.MatchPercent);
+                ClearSingleStrokeData();
+            }
+        }
         /// <summary>
         /// Registers a spell, clears out past spell glyph components
         /// </summary>
-        public bool TryCastSymbol(out List<SymbolData> data)
+        public bool TryCastSymbol(out SymbolData data)
         {
             //NOTE: A cooldown on capturing was implemented at one point, it has been removed since I don't see why it's needed, and would be easy to re-implement
 
             //if clicked Trigger before Grip, immediately stop 
             if (_drawing)
                 TryEndStroke();
-
-            data = new List<SymbolData>();
+            Debug.LogError("Stroke data length " + _strokeData.Count);
 
             if (_strokeData.Count > 0)
             {
                 var processedSingle = GetSingle();
-                data.Add(processedSingle);
-            }
-
-            SymbolData processedCombined = null;
-            if (_left._strokeData.Count > 0 && _right._strokeData.Count > 0)
-            {
-                processedCombined = GetCombined();
-                data.Add(processedCombined);
-            }
-
-            if(data.Count > 0)
-            {
+                data = processedSingle;
                 OnCast?.Invoke();
                 return true;
             }
+            data = null;
             return false;
         }
         public void ClearSingleStrokeData()
@@ -95,15 +116,9 @@ namespace BacklineVR.Casting
             DestroyStrokes(_strokeData);
             _strokeData.Clear();
         }
-        public void ClearCombinedStrokeData()
-        {
-            DestroyStrokes(GetCombinedRaw());//This clears from the clone
-            _left._strokeData.Clear();
-            _right._strokeData.Clear();
-        }
+
         private void Update()
         {
-            _cursorPos = transform.position;
             if (_activeCapture != null)
                 _activeCapture.StrokeProvider.SetPosition(_cursorPos);
         }
@@ -124,6 +139,7 @@ namespace BacklineVR.Casting
         /// </summary>
         public bool TryEndStroke()
         {
+            Debug.LogError("Trying to end stroke");
             if (!_drawing || _activeCapture == null)
                 return false;
 
@@ -138,11 +154,12 @@ namespace BacklineVR.Casting
             }
             _strokeData.Add(_activeCapture);
             _activeCapture = null;
+            Debug.LogError("Stroke data length " + _strokeData.Count);
             return true;
         }
         private SymbolData GetSingle()
         {
-            if (_isLeft && ActiveMirrorSettings == MirrorSettings.MirrorLeft || !_isLeft && ActiveMirrorSettings == MirrorSettings.MirrorRight)
+            if (_handSide == HandSide.Left && ActiveMirrorSettings == MirrorSettings.MirrorLeft || _handSide == HandSide.Right && ActiveMirrorSettings == MirrorSettings.MirrorRight)
             {
                 var mirroredList = new List<StrokeCapture>(_strokeData.Count);
                 for (var i = 0; i < _strokeData.Count; i++)
@@ -154,35 +171,6 @@ namespace BacklineVR.Casting
                 return SymbolProcessor.ProcessStrokes(mirroredList, 3);
             }
             return SymbolProcessor.ProcessStrokes(_strokeData, 3);
-        }
-        private SymbolData GetCombined()
-        {
-            return SymbolProcessor.ProcessStrokes(GetCombinedRaw(), 3);
-        }
-        private List<StrokeCapture> GetCombinedRaw()
-        {
-            var leftIdx = 0;
-            var rightIdx = 0;
-            var leftStrokeData = _left._strokeData;
-            var rightStrokeData = _right._strokeData;
-            var combinedList = new List<StrokeCapture>(leftStrokeData.Count + rightStrokeData.Count);
-            for (var i = 0; i < leftStrokeData.Count + rightStrokeData.Count; i++)
-            {
-                //If either of them run out, finish rest adding the other one
-                var leftStrokeTime = leftIdx < leftStrokeData.Count ? leftStrokeData[leftIdx].StartTime : float.MaxValue;
-                var rightStrokeTime = rightIdx < rightStrokeData.Count ? rightStrokeData[rightIdx].StartTime : float.MaxValue;
-                if (leftStrokeTime < rightStrokeTime)
-                {
-                    combinedList.Add(leftStrokeData[leftIdx]);
-                    leftIdx++;
-                }
-                else
-                {
-                    combinedList.Add(rightStrokeData[rightIdx]);
-                    rightIdx++;
-                }
-            }
-            return combinedList;
         }
 
         private protected void DestroyStrokes(List<StrokeCapture> currentStrokeList)
