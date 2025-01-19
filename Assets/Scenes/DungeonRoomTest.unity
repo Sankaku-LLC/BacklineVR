@@ -621,7 +621,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.656
+      value: -7.25
       objectReference: {fileID: 0}
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalPosition.y
@@ -629,7 +629,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.203
+      value: -1.53
       objectReference: {fileID: 0}
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalRotation.w
@@ -658,14 +658,6 @@ PrefabInstance:
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 251881363326912782, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
-      propertyPath: m_FillAmount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2644002181869986990, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
-      propertyPath: m_FillAmount
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7069393698020020467, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_Name
@@ -853,7 +845,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.033
+      value: 2.31
       objectReference: {fileID: 0}
     - target: {fileID: 57710321679340938, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_LocalPosition.z
@@ -891,9 +883,25 @@ PrefabInstance:
       propertyPath: m_FillAmount
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 686791808829679082, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 686791808829679082, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 686791808829679082, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2644002181869986990, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_FillAmount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129762102319847833, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7069393698020020467, guid: bf3d19c2446b27d49acf2ba1439ab134, type: 3}
       propertyPath: m_Name
@@ -2570,8 +2578,16 @@ PrefabInstance:
       value: Knight
       objectReference: {fileID: 0}
     - target: {fileID: 4458768947254507479, guid: 27ff102e45104d747acf92aaad391b6f, type: 3}
+      propertyPath: MaxHealth
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4458768947254507479, guid: 27ff102e45104d747acf92aaad391b6f, type: 3}
       propertyPath: MeleeAttackDmg
-      value: 40
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4765310530612314331, guid: 27ff102e45104d747acf92aaad391b6f, type: 3}
+      propertyPath: maxStagger
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

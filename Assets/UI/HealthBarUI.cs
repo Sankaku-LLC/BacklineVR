@@ -10,19 +10,30 @@ public class HealthBarUI : MonoBehaviour
     private float currHealth;
     public float maxHealth = 100f;
     private float lerpTimer;
-    public float lerpSpeed = 2f;
+    public float lerpSpeed = 100f;
     [SerializeField]
     private Image frontHealthBar;
     [SerializeField]
     private Image backHealthBar;
-    private void Start()
+    public void SetMaxHealth(float newMaxHealth)
     {
+        maxHealth = newMaxHealth;
         currHealth = maxHealth;
     }
     public void TakeDamage(float damage)
     {
         currHealth -= damage;
         lerpTimer = 0f;
+    }
+    [ContextMenu("AddHealth")]
+    public void RecoverHealthTest()
+    {
+        RecoverHealth(30f);
+    }
+    [ContextMenu("RemoveHealth")]
+    public void RemoveHealthTest()
+    {
+        TakeDamage(30f);
     }
     public void RecoverHealth(float heal)
     {
@@ -45,7 +56,8 @@ public class HealthBarUI : MonoBehaviour
             backHealthBar.color = Color.red;
             lerpTimer += Time.deltaTime;
             float percentComplete = lerpTimer / lerpSpeed;
-            percentComplete = percentComplete * percentComplete;
+            percentComplete = Mathf.Clamp(percentComplete, 0, 1);
+            percentComplete = Mathf.Sqrt(2 * percentComplete - (percentComplete * percentComplete));
             backHealthBar.fillAmount = Mathf.Lerp(fillBack, healthPercent, percentComplete);
         }
         if (fillMain < healthPercent)
@@ -54,7 +66,8 @@ public class HealthBarUI : MonoBehaviour
             backHealthBar.fillAmount = healthPercent;
             lerpTimer += Time.deltaTime;
             float percentComplete = lerpTimer / lerpSpeed;
-            percentComplete = percentComplete * percentComplete;
+            percentComplete = Mathf.Clamp(percentComplete, 0, 1);
+            percentComplete = Mathf.Sqrt(2 * percentComplete - (percentComplete * percentComplete));
             frontHealthBar.fillAmount = Mathf.Lerp(fillMain, backHealthBar.fillAmount, percentComplete);
         }
     }
