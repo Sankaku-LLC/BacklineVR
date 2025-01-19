@@ -5,8 +5,11 @@ namespace BacklineVR.Characters
 {
     public interface IDestructible
     {
-        public float GetHealth();
-        public void SetHealth(float health);
-        public void DealDamage();
+        public void TakeDamage(float damageAmount)
+        {
+        }
+        public void RecoverHealth(float healAmount)
+        {
+        }
     }
 }

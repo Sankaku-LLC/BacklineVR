@@ -150,6 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e4165beb8eaf049a1074def8c9cebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MeleeAttackDmg: 5
+  RandomVarience: 2
+  _healthBarUI: {fileID: 7297469346547816112}
+  MaxHealth: 100
+  CurrentHealth: 0
 --- !u!1 &1591680435772430159
 GameObject:
   m_ObjectHideFlags: 0
@@ -825,3 +830,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5999910655500940133, guid: fc70050c993732e42a4a21159e0b88ba, type: 3}
   m_PrefabInstance: {fileID: 5725006089625778420}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7297469346547816112 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3041793428290498116, guid: fc70050c993732e42a4a21159e0b88ba, type: 3}
+  m_PrefabInstance: {fileID: 5725006089625778420}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa06ac67df9d0849b6bfae9b8afed11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

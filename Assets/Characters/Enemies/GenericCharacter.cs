@@ -1,9 +1,10 @@
+using BacklineVR.Characters;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GenericCharacter : MonoBehaviour, ITargetable
+public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
 {
     private protected CombatManager _combatManager;
     public GameObject GetGameObject() => this.gameObject;
@@ -11,9 +12,13 @@ public class GenericCharacter : MonoBehaviour, ITargetable
     public virtual TargetType GetTargetType() => TargetType.None;
     public ITargetable Target { private set; get; }
     public virtual float MeleeReach => 2f;
+    public float MeleeAttackDmg = 5f;
+    public float RandomVarience = 2f;
     public virtual float MovemntSpeed => 2f;
     [SerializeField]
-    private HealthBarUI _healthBarUI;    
+    private HealthBarUI _healthBarUI;
+    public float MaxHealth = 100f;
+    public float CurrentHealth;
     private NavMeshAgent _nav;
     private bool isMobile;
 
@@ -21,6 +26,7 @@ public class GenericCharacter : MonoBehaviour, ITargetable
     {
         _nav = GetComponent<NavMeshAgent>();
         _combatManager = CombatManager.CombatManagerInstance;
+        CurrentHealth = MaxHealth;
         OnInitialized();
     }
     public virtual void OnInitialized()
@@ -38,15 +44,25 @@ public class GenericCharacter : MonoBehaviour, ITargetable
     }
     public void TakeDamage(float damageAmount)
     {
-
+        CurrentHealth -= damageAmount;
+        _healthBarUI.TakeDamage(damageAmount);
     }
     public void RecoverHealth(float healAmount)
     {
-       // _healthBarUI.HealDamage()
+        CurrentHealth += healAmount;
+        _healthBarUI.RecoverHealth(healAmount);
     }
-    private void UpdateHealthBar()
+    public void DamageTarget(float damangeAmount)
     {
-
+        Target.GetGameObject().GetComponent<IDestructible>().TakeDamage(damangeAmount);
+    }
+    public void HealTarget(float healAmount)
+    {
+        Target.GetGameObject().GetComponent<IDestructible>().RecoverHealth(healAmount);
+    }
+    public float GetMeleeAttackDamage()
+    {
+       return Random.Range(MeleeAttackDmg - RandomVarience, MeleeAttackDmg + RandomVarience);
     }
     public void SetTarget(ITargetable newTarget)
     {

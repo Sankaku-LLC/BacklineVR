@@ -15,24 +15,22 @@ public class HealthBarUI : MonoBehaviour
     private Image frontHealthBar;
     [SerializeField]
     private Image backHealthBar;
-
-    void Start()
+    private void Start()
     {
-        currHealth = maxHealth;   
+        currHealth = maxHealth;
     }
-    [ContextMenu("TakeDamage")]
-    private void TakeDamage()
+    public void TakeDamage(float damage)
     {
-        TakeDamage(UnityEngine.Random.Range(5, 12));
+        currHealth -= damage;
+        lerpTimer = 0f;
     }
-    [ContextMenu("HealDamage")]
-    private void HealthDamage()
+    public void RecoverHealth(float heal)
     {
-        HealDamage(UnityEngine.Random.Range(5, 12));
+        currHealth += heal;
+        lerpTimer = 0f;
     }
     void Update()
     {
-        
         currHealth = Mathf.Clamp(currHealth, 0, maxHealth);
         UpdateHealthUI();
     }
@@ -59,15 +57,5 @@ public class HealthBarUI : MonoBehaviour
             percentComplete = percentComplete * percentComplete;
             frontHealthBar.fillAmount = Mathf.Lerp(fillMain, backHealthBar.fillAmount, percentComplete);
         }
-    }
-    public void TakeDamage(float damage)
-    {
-        currHealth -= damage;
-        lerpTimer = 0f;
-    }
-    public void HealDamage(float heal)
-    {
-        currHealth += heal;
-        lerpTimer = 0f;
     }
 }
