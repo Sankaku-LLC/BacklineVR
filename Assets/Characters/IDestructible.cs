@@ -11,5 +11,6 @@ namespace BacklineVR.Characters
         public void RecoverHealth(float healAmount)
         {
         }
+        public bool IsDestroyed();
     }
 }

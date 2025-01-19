@@ -11,4 +11,9 @@ public class AllyCharacter : GenericCharacter, ITargetable
     {
         _combatManager.OnAllySpawned(this);
     }
+    public override void OnKilled()
+    {
+        base.OnKilled();
+        _combatManager.OnAllyKilled(this);
+    }
 }
