@@ -8,7 +8,7 @@ public class CombatManager : MonoBehaviour
 {
     public static CombatManager CombatManagerInstance;
     public readonly List<EnemyCharacter> AllSpawnedEnemies = new List<EnemyCharacter>(32);
-    public readonly List<AllyCharacter> AllSpawnedAllies = new List<AllyCharacter>(32);
+    public readonly List<ITargetable> AllSpawnedAllies = new List<ITargetable>(32);
     void Awake()
     {
         if (CombatManagerInstance)
@@ -34,14 +34,14 @@ public class CombatManager : MonoBehaviour
     {
         AllSpawnedEnemies.Add(enemy);
     }
-    public void OnAllySpawned(AllyCharacter ally) { 
+    public void OnAllySpawned(ITargetable ally) { 
         AllSpawnedAllies.Add(ally);
     }
     public void OnEnemyKilled(EnemyCharacter enemy)
     {
         AllSpawnedEnemies.Remove(enemy);
     }
-    public void OnAllyKilled(AllyCharacter ally)
+    public void OnAllyKilled(ITargetable ally)
     {
         AllSpawnedAllies.Remove(ally);
     }
@@ -62,11 +62,11 @@ public class CombatManager : MonoBehaviour
     }
     public ITargetable GetClosestAllyUnit(Vector3 curPosition)
     {
-        AllyCharacter closestAlly = null;
+        ITargetable closestAlly = null;
         var closestDist = float.MaxValue;
         foreach (var ally in AllSpawnedAllies)
         {
-            var newDist = GetSquaredDistance(ally.transform.position, curPosition);
+            var newDist = GetSquaredDistance(ally.GetMainTransform().position, curPosition);
             if (IsLessThanAndNonZero(newDist, closestDist))
             {
                 closestDist = newDist;

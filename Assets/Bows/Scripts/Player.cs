@@ -9,6 +9,7 @@ namespace BacklineVR.Core
 {
     public class Player : MonoBehaviour, ITargetable, IDestructible
     {
+        private CombatManager _combatManager;
         public static Player Instance;
         public Transform Head;
         public Transform Origin;
@@ -24,6 +25,10 @@ namespace BacklineVR.Core
 
         [SerializeField]
         private Hand _rightHand;
+        private bool _isKilled;
+        private bool _isStaggered;
+        public bool IsDestroyed() => _isKilled;
+        public bool IsStaggered() => _isStaggered;
 
         private AttachmentFlags _flags = AttachmentFlags.SnapOnAttach | AttachmentFlags.ParentToHand | AttachmentFlags.TurnOnKinematic | AttachmentFlags.TurnOffGravity | AttachmentFlags.AllowSidegrade;
         public GameObject GetGameObject() => this.gameObject;
@@ -36,6 +41,8 @@ namespace BacklineVR.Core
         // Start is called before the first frame update
         void Start()
         {
+            _combatManager = CombatManager.CombatManagerInstance;
+            _combatManager.OnAllySpawned(this);
             _leftHand.AttachObject(_longBow.gameObject, GrabTypes.Scripted);
             _rightHand.AttachObject(_arrowHand.gameObject, GrabTypes.Scripted);
         }
@@ -48,7 +55,5 @@ namespace BacklineVR.Core
         public void TakeDamage(float damageAmount)
         {
         }
-        public bool IsDestroyed();
-        public bool IsStaggered();
     }
 }
