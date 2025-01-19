@@ -110,7 +110,7 @@ namespace BacklineVR.Interaction
         private int prevOverlappingColliders = 0;
 
         private const int ColliderArraySize = 32;
-        private Collider[] overlappingColliders;
+        private Collider[] overlappingColliders = new Collider[ColliderArraySize];
 
         private Player playerInstance;
 
@@ -160,10 +160,6 @@ namespace BacklineVR.Interaction
                 Debug.LogWarning("<b>[SteamVR Interaction]</b> Hand is on default layer. This puts unnecessary strain on hover checks as it is always true for hand colliders (which are then ignored).", this);
             else
                 hoverLayerMask &= ~(1 << this.gameObject.layer); //ignore self for hovering
-
-            // allocate array for colliders
-            overlappingColliders = new Collider[ColliderArraySize];
-
         }
 
         //-------------------------------------------------
@@ -977,32 +973,32 @@ namespace BacklineVR.Interaction
                     {
                         Quaternion targetHandRotation;
                         Vector3 targetHandPosition;
-                        ///////////////////////////////I don't know which should be active here
+                        //I don't know which should be active here
                         //if (pose == null)
-                        //{
-                        //    Quaternion offset = Quaternion.Inverse(this.transform.rotation) * currentAttachedObjectInfo.Value.handAttachmentPointTransform.rotation;
-                        //    targetHandRotation = currentAttachedObjectInfo.Value.interactable.transform.rotation * Quaternion.Inverse(offset);
-
-                        //    Vector3 worldOffset = (this.transform.position - currentAttachedObjectInfo.Value.handAttachmentPointTransform.position);
-                        //    Quaternion rotationDiff = Quaternion.identity;// mainRenderModel.GetHandRotation() * Quaternion.Inverse(this.transform.rotation);
-                        //    Vector3 localOffset = rotationDiff * worldOffset;
-                        //    targetHandPosition = currentAttachedObjectInfo.Value.interactable.transform.position + localOffset;
-                        //}
-                        //else
                         {
-                            Transform objectT = currentAttachedObjectInfo.Value.attachedObject.transform;
-                            Vector3 oldItemPos = objectT.position;
-                            Quaternion oldItemRot = objectT.transform.rotation;
-                            objectT.position = TargetItemPosition(currentAttachedObjectInfo.Value);
-                            objectT.rotation = TargetItemRotation(currentAttachedObjectInfo.Value);
-                            Vector3 localSkelePos = objectT.InverseTransformPoint(transform.position);
-                            Quaternion localSkeleRot = Quaternion.Inverse(objectT.rotation) * transform.rotation;
-                            objectT.position = oldItemPos;
-                            objectT.rotation = oldItemRot;
+                            Quaternion offset = Quaternion.Inverse(this.transform.rotation) * currentAttachedObjectInfo.Value.handAttachmentPointTransform.rotation;
+                            targetHandRotation = currentAttachedObjectInfo.Value.interactable.transform.rotation * Quaternion.Inverse(offset);
 
-                            targetHandPosition = objectT.TransformPoint(localSkelePos);
-                            targetHandRotation = objectT.rotation * localSkeleRot;
+                            Vector3 worldOffset = (this.transform.position - currentAttachedObjectInfo.Value.handAttachmentPointTransform.position);
+                            Quaternion rotationDiff = Quaternion.identity;// mainRenderModel.GetHandRotation() * Quaternion.Inverse(this.transform.rotation);
+                            Vector3 localOffset = rotationDiff * worldOffset;
+                            targetHandPosition = currentAttachedObjectInfo.Value.interactable.transform.position + localOffset;
                         }
+                        //else
+                        //{
+                        //    Transform objectT = currentAttachedObjectInfo.Value.attachedObject.transform;
+                        //    Vector3 oldItemPos = objectT.position;
+                        //    Quaternion oldItemRot = objectT.transform.rotation;
+                        //    objectT.position = TargetItemPosition(currentAttachedObjectInfo.Value);
+                        //    objectT.rotation = TargetItemRotation(currentAttachedObjectInfo.Value);
+                        //    Vector3 localSkelePos = objectT.InverseTransformPoint(transform.position);
+                        //    Quaternion localSkeleRot = Quaternion.Inverse(objectT.rotation) * transform.rotation;
+                        //    objectT.position = oldItemPos;
+                        //    objectT.rotation = oldItemRot;
+
+                        //    targetHandPosition = objectT.TransformPoint(localSkelePos);
+                        //    targetHandRotation = objectT.rotation * localSkeleRot;
+                        //}
 
                         //if (mainRenderModel != null)
                         //    mainRenderModel.SetHandRotation(targetHandRotation);
@@ -1223,7 +1219,7 @@ namespace BacklineVR.Interaction
         public void TriggerHapticPulse(ushort microSecondsDuration)
         {
             float seconds = (float)microSecondsDuration / 1000000f;
-            _inputProvider.RequestHapticPulse(HandSide, 1, seconds, 1 / seconds);
+            _inputProvider.RequestHapticPulse(HandSide, 1, seconds, 1.5f / seconds);
         }
 
         public GrabTypes GetGrabStarting(GrabTypes explicitType = GrabTypes.None)

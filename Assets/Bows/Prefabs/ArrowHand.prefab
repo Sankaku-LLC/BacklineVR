@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 118972}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.008000016, y: 0.03699994, z: 0.1249}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -189,7 +189,7 @@ Transform:
   m_GameObject: {fileID: 132462}
   serializedVersion: 2
   m_LocalRotation: {x: 0.073854074, y: 0, z: 0, w: 0.9972691}
-  m_LocalPosition: {x: 0, y: -0.019, z: -0.0509}
+  m_LocalPosition: {x: -0.008, y: 0.018, z: 0.074}
   m_LocalScale: {x: 1, y: 1, z: 0.991245}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -205,8 +205,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400276}
-  - component: {fileID: 11447524}
   - component: {fileID: 114000012696964694}
+  - component: {fileID: 11447524}
   m_Layer: 0
   m_Name: ArrowHand
   m_TagString: Untagged
@@ -232,26 +232,6 @@ Transform:
   - {fileID: 4000011047323824}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &11447524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 187848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d85480da87762944399dab6c99985eef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 173732, guid: 81fc1450441aca64e8cc1a0e14b1aa77, type: 3}
-  arrowNockTransform: {fileID: 413922}
-  nockDistance: 0.1
-  lerpCompleteDistance: 0.08
-  rotationLerpThreshold: 0.15
-  positionLerpThreshold: 0.15
-  arrowSpawnSound: {fileID: 11498220}
-  maxArrowCount: 10
 --- !u!114 &114000012696964694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +280,26 @@ MonoBehaviour:
   highlightOnHover: 0
   hideHighlight: []
   hoverPriority: 0
+--- !u!114 &11447524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85480da87762944399dab6c99985eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 173732, guid: 81fc1450441aca64e8cc1a0e14b1aa77, type: 3}
+  arrowNockTransform: {fileID: 413922}
+  nockDistance: 0.1
+  lerpCompleteDistance: 0.08
+  rotationLerpThreshold: 0.15
+  positionLerpThreshold: 0.15
+  arrowSpawnSound: {fileID: 11498220}
+  maxArrowCount: 10
 --- !u!1 &191840
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,7 +1264,7 @@ Transform:
   m_GameObject: {fileID: 1000013118085150}
   serializedVersion: 2
   m_LocalRotation: {x: -0.33629093, y: -0.032667592, z: 0.059307523, w: 0.939321}
-  m_LocalPosition: {x: -0.014299989, y: 0.03700006, z: -0.034199953}
+  m_LocalPosition: {x: -0.022300005, y: 0.074, z: 0.090700045}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
