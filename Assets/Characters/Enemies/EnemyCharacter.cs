@@ -10,4 +10,9 @@ public class EnemyCharacter : GenericCharacter, ITargetable
     {
         _combatManager.OnEnemySpawned(this);
     }
+    public override void OnKilled()
+    {
+        base.OnKilled();
+        _combatManager.OnEnemyKilled(this);
+    }
 }
