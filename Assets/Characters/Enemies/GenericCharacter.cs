@@ -12,12 +12,14 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     public Transform GetMainTransform() => this.transform;
     public virtual TargetType GetTargetType() => TargetType.None;
     public ITargetable Target { private set; get; }
-    public virtual float MeleeReach => 2f;
+    public virtual float MeleeReach => 1f;
     public float MeleeAttackDmg = 5f;
     public float RandomVarience = 2f;
     public float MovemntSpeed = 2f;
     [SerializeField]
     private HealthBarUI _healthBarUI;
+    [SerializeField]
+    private StaggerBarUI _staggerBarUI;
     [SerializeField]
     private ParticleSystem _deathParticleEffect;
     private BehaviorTree _bt;
@@ -25,6 +27,8 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     public float MaxHealth = 100f;
     public float CurrentHealth;
     private NavMeshAgent _nav;
+    private CharacterController _characterController;
+    private Rigidbody _rb;
     private bool isMobile;
     private bool _isKilled;
     public bool IsDestroyed() => _isKilled;
@@ -33,9 +37,12 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     {
         _nav = GetComponent<NavMeshAgent>();
         _bt = GetComponent<BehaviorTree>();
+        _rb = GetComponent<Rigidbody>();
+        _characterController = GetComponent<CharacterController>();
         _combatManager = CombatManager.CombatManagerInstance;
         CurrentHealth = MaxHealth;
         _anim = GetComponent<Animator>();
+        _healthBarUI.SetMaxHealth(MaxHealth);
         OnInitialized();
     }
     public virtual void OnInitialized()
@@ -55,6 +62,7 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     {
         CurrentHealth -= damageAmount;
         _healthBarUI.TakeDamage(damageAmount);
+        _staggerBarUI.TakeStagger(damageAmount+10);
         if (CurrentHealth < 0)
             OnKilled();        
         
@@ -62,6 +70,10 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
     public virtual void OnKilled()
     {
         _isKilled = true;
+        isMobile = false;
+        _nav.enabled = false;
+        _rb.isKinematic = true;
+        _characterController.enabled = false;
         _anim.SetBool("IsKilled", true);
         _deathParticleEffect.Play();
         _bt.SendEvent("IsKilled");
