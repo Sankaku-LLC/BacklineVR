@@ -115,10 +115,6 @@ namespace BacklineVR.Interaction.Bow
         //-------------------------------------------------
         public void HandAttachedUpdate( Hand hand )
 		{
-			// Reset transform since we cheated it right after getting poses on previous frame
-			//transform.localPosition = Vector3.zero;
-			//transform.localRotation = Quaternion.identity;
-
 			// Update handedness guess
 			EvaluateHandedness();
 

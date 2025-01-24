@@ -14,20 +14,8 @@ namespace BacklineVR.Interaction
     //-------------------------------------------------------------------------
     public class Interactable : MonoBehaviour
     {
-        [Tooltip("Hide the whole hand on attachment and show on detach")]
-        public bool hideHandOnAttach = true;
-
-        [Tooltip("Hide the skeleton part of the hand on attachment and show on detach")]
-        public bool hideSkeletonOnAttach = false;
-
         [Tooltip("Hide the controller part of the hand on attachment and show on detach")]
         public bool hideControllerOnAttach = false;
-
-        [Tooltip("The integer in the animator to trigger on pickup. 0 for none")]
-        public int handAnimationOnPickup = 0;
-
-        //[Tooltip("The range of motion to set on the skeleton. None for no change.")]
-        //public SkeletalMotionRangeChange setRangeOfMotionOnPickup = SkeletalMotionRangeChange.None;
 
         public delegate void OnAttachedToHandDelegate(Hand hand);
         public delegate void OnDetachedFromHandDelegate(Hand hand);
@@ -46,10 +34,6 @@ namespace BacklineVR.Interaction
 
         public bool snapAttachEaseInCompleted = false;
 
-
-        // [Tooltip("The skeleton pose to apply when grabbing. Can only set this or handFollowTransform.")]
-        //[HideInInspector]
-        //public SteamVR_Skeleton_Poser skeletonPoser;
 
         [Tooltip("Should the rendered hand lock on to and follow the object")]
         public bool handFollowTransform= true;
@@ -92,26 +76,10 @@ namespace BacklineVR.Interaction
 
         private void Awake()
         {
-        //    skeletonPoser = GetComponent<SteamVR_Skeleton_Poser>();
         }
 
         protected virtual void Start()
         {
-            //if (highlightMat == null)
-            //    highlightMat = (Material)Resources.Load("SteamVR_HoverHighlight_URP", typeof(Material));
-
-
-            //if (highlightMat == null)
-            //    Debug.LogError("<b>[SteamVR Interaction]</b> Hover Highlight Material is missing. Please create a material named 'SteamVR_HoverHighlight' and place it in a Resources folder", this);
-
-            //if (skeletonPoser != null)
-            //{
-            //    if (useHandObjectAttachmentPoint)
-            //    {
-            //        //Debug.LogWarning("<b>[SteamVR Interaction]</b> SkeletonPose and useHandObjectAttachmentPoint both set at the same time. Ignoring useHandObjectAttachmentPoint.");
-            //        useHandObjectAttachmentPoint = false;
-            //    }
-            //}
         }
 
         protected virtual bool ShouldIgnoreHighlight(Component component)
@@ -191,52 +159,6 @@ namespace BacklineVR.Interaction
             }
         }
 
-        protected virtual void UpdateHighlightRenderers()
-        {
-            if (highlightHolder == null)
-                return;
-
-            for (int skinnedIndex = 0; skinnedIndex < existingSkinnedRenderers.Length; skinnedIndex++)
-            {
-                SkinnedMeshRenderer existingSkinned = existingSkinnedRenderers[skinnedIndex];
-                SkinnedMeshRenderer highlightSkinned = highlightSkinnedRenderers[skinnedIndex];
-
-                if (existingSkinned != null && highlightSkinned != null && attachedToHand == false)
-                {
-                    highlightSkinned.transform.position = existingSkinned.transform.position;
-                    highlightSkinned.transform.rotation = existingSkinned.transform.rotation;
-                    highlightSkinned.transform.localScale = existingSkinned.transform.lossyScale;
-                    highlightSkinned.localBounds = existingSkinned.localBounds;
-                    highlightSkinned.enabled = isHovering && existingSkinned.enabled && existingSkinned.gameObject.activeInHierarchy;
-
-                    int blendShapeCount = existingSkinned.sharedMesh.blendShapeCount;
-                    for (int blendShapeIndex = 0; blendShapeIndex < blendShapeCount; blendShapeIndex++)
-                    {
-                        highlightSkinned.SetBlendShapeWeight(blendShapeIndex, existingSkinned.GetBlendShapeWeight(blendShapeIndex));
-                    }
-                }
-                else if (highlightSkinned != null)
-                    highlightSkinned.enabled = false;
-
-            }
-
-            for (int rendererIndex = 0; rendererIndex < highlightRenderers.Length; rendererIndex++)
-            {
-                MeshRenderer existingRenderer = existingRenderers[rendererIndex];
-                MeshRenderer highlightRenderer = highlightRenderers[rendererIndex];
-
-                if (existingRenderer != null && highlightRenderer != null && attachedToHand == false)
-                {
-                    highlightRenderer.transform.position = existingRenderer.transform.position;
-                    highlightRenderer.transform.rotation = existingRenderer.transform.rotation;
-                    highlightRenderer.transform.localScale = existingRenderer.transform.lossyScale;
-                    highlightRenderer.enabled = isHovering && existingRenderer.enabled && existingRenderer.gameObject.activeInHierarchy;
-                }
-                else if (highlightRenderer != null)
-                    highlightRenderer.enabled = false;
-            }
-        }
-
         /// <summary>
         /// Called when a Hand starts hovering over this object
         /// </summary>
@@ -277,8 +199,6 @@ namespace BacklineVR.Interaction
         {
             if (highlightOnHover)
             {
-                //UpdateHighlightRenderers();
-
                 if (isHovering == false && highlightHolder != null)
                     Destroy(highlightHolder);
             }
@@ -294,12 +214,6 @@ namespace BacklineVR.Interaction
             {
                 onAttachedToHand.Invoke(hand);
             }
-
-            //if (skeletonPoser != null && hand.skeleton != null)
-            //{
-            //    hand.skeleton.BlendToPoser(skeletonPoser, blendToPoseTime);
-            //}
-
             attachedToHand = hand;
         }
 
@@ -309,13 +223,6 @@ namespace BacklineVR.Interaction
             {
                 onDetachedFromHand.Invoke(hand);
             }
-
-
-            //if (skeletonPoser != null)
-            //{
-            //    if (hand.skeleton != null)
-            //        hand.skeleton.BlendToSkeleton(releasePoseBlendTime);
-            //}
 
             attachedToHand = null;
         }
@@ -327,7 +234,6 @@ namespace BacklineVR.Interaction
             if (attachedToHand != null)
             {
                 attachedToHand.DetachObject(this.gameObject, false);
-                //attachedToHand.skeleton.BlendToSkeleton(0.1f);
             }
 
             if (highlightHolder != null)

@@ -57,14 +57,6 @@ namespace BacklineVR.Interaction
         [Tooltip("A transform on the hand to center attached objects on")]
         public Transform objectAttachmentPoint;
 
-        //public GameObject renderModelPrefab;
-        //[HideInInspector]
-        //public List<RenderModel> renderModels = new List<RenderModel>();
-        //[HideInInspector]
-        //public RenderModel mainRenderModel;
-        //[HideInInspector]
-        //public RenderModel hoverhighlightRenderModel;
-
         public bool showDebugText = false;
         public bool spewDebugText = false;
         public bool showDebugInteractables = false;
@@ -113,25 +105,6 @@ namespace BacklineVR.Interaction
         private Collider[] overlappingColliders = new Collider[ColliderArraySize];
 
         private Player playerInstance;
-
-        //public bool isActive
-        //{
-        //    get
-        //    {
-        //        if (trackedObject != null)
-        //            return trackedObject.isActive;
-
-        //        return this.gameObject.activeInHierarchy;
-        //    }
-        //}
-
-        //public bool isPoseValid
-        //{
-        //    get
-        //    {
-        //        return trackedObject.isValid;
-        //    }
-        //}
 
         //-------------------------------------------------
         protected virtual void Awake()
@@ -239,114 +212,6 @@ namespace BacklineVR.Interaction
             }
         }
 
-        //public SteamVR_Behaviour_Skeleton skeleton
-        //{
-        //    get
-        //    {
-        //        if (mainRenderModel != null)
-        //            return mainRenderModel.GetSkeleton();
-
-        //        return null;
-        //    }
-        //}
-
-        //public void ShowController(bool permanent = false)
-        //{
-        //    if (mainRenderModel != null)
-        //        mainRenderModel.SetControllerVisibility(true, permanent);
-
-        //    if (hoverhighlightRenderModel != null)
-        //        hoverhighlightRenderModel.SetControllerVisibility(true, permanent);
-        //}
-
-        //public void HideController(bool permanent = false)
-        //{
-        //    if (mainRenderModel != null)
-        //        mainRenderModel.SetControllerVisibility(false, permanent);
-
-        //    if (hoverhighlightRenderModel != null)
-        //        hoverhighlightRenderModel.SetControllerVisibility(false, permanent);
-        //}
-
-        //public void ShowSkeleton(bool permanent = false)
-        //{
-        //    if (mainRenderModel != null)
-        //        mainRenderModel.SetHandVisibility(true, permanent);
-
-        //    if (hoverhighlightRenderModel != null)
-        //        hoverhighlightRenderModel.SetHandVisibility(true, permanent);
-        //}
-
-        //public void HideSkeleton(bool permanent = false)
-        //{
-        //    if (mainRenderModel != null)
-        //        mainRenderModel.SetHandVisibility(false, permanent);
-
-        //    if (hoverhighlightRenderModel != null)
-        //        hoverhighlightRenderModel.SetHandVisibility(false, permanent);
-        //}
-
-        //public bool HasSkeleton()
-        //{
-        //    return mainRenderModel != null && mainRenderModel.GetSkeleton() != null;
-        //}
-
-        //public void Show()
-        //{
-        //    SetVisibility(true);
-        //}
-
-        //public void Hide()
-        //{
-        //    SetVisibility(false);
-        //}
-
-        //public void SetVisibility(bool visible)
-        //{
-        //    if (mainRenderModel != null)
-        //        mainRenderModel.SetVisibility(visible);
-        //}
-
-        //public void SetSkeletonRangeOfMotion(EVRSkeletalMotionRange newRangeOfMotion, float blendOverSeconds = 0.1f)
-        //{
-        //    for (int renderModelIndex = 0; renderModelIndex < renderModels.Count; renderModelIndex++)
-        //    {
-        //        renderModels[renderModelIndex].SetSkeletonRangeOfMotion(newRangeOfMotion, blendOverSeconds);
-        //    }
-        //}
-
-        //public void SetTemporarySkeletonRangeOfMotion(SkeletalMotionRangeChange temporaryRangeOfMotionChange, float blendOverSeconds = 0.1f)
-        //{
-        //    for (int renderModelIndex = 0; renderModelIndex < renderModels.Count; renderModelIndex++)
-        //    {
-        //        renderModels[renderModelIndex].SetTemporarySkeletonRangeOfMotion(temporaryRangeOfMotionChange, blendOverSeconds);
-        //    }
-        //}
-
-        //public void ResetTemporarySkeletonRangeOfMotion(float blendOverSeconds = 0.1f)
-        //{
-        //    for (int renderModelIndex = 0; renderModelIndex < renderModels.Count; renderModelIndex++)
-        //    {
-        //        renderModels[renderModelIndex].ResetTemporarySkeletonRangeOfMotion(blendOverSeconds);
-        //    }
-        //}
-
-        //public void SetAnimationState(int stateValue)
-        //{
-        //    for (int renderModelIndex = 0; renderModelIndex < renderModels.Count; renderModelIndex++)
-        //    {
-        //        renderModels[renderModelIndex].SetAnimationState(stateValue);
-        //    }
-        //}
-
-        //public void StopAnimation()
-        //{
-        //    for (int renderModelIndex = 0; renderModelIndex < renderModels.Count; renderModelIndex++)
-        //    {
-        //        renderModels[renderModelIndex].StopAnimation();
-        //    }
-        //}
-
 
         //-------------------------------------------------
         // Attach a GameObject to this GameObject
@@ -411,21 +276,6 @@ namespace BacklineVR.Interaction
                 if (attachedObject.interactable.useHandObjectAttachmentPoint)
                     attachedObject.handAttachmentPointTransform = objectAttachmentPoint;
 
-                //if (attachedObject.interactable.hideHandOnAttach)
-                //    Hide();
-
-                //if (attachedObject.interactable.hideSkeletonOnAttach && mainRenderModel != null && mainRenderModel.displayHandByDefault)
-                //    HideSkeleton();
-
-                //if (attachedObject.interactable.hideControllerOnAttach && mainRenderModel != null && mainRenderModel.displayControllerByDefault)
-                //    HideController();
-
-                //if (attachedObject.interactable.handAnimationOnPickup != 0)
-                //    SetAnimationState(attachedObject.interactable.handAnimationOnPickup);
-
-                //if (attachedObject.interactable.setRangeOfMotionOnPickup != SkeletalMotionRangeChange.None)
-                //    SetTemporarySkeletonRangeOfMotion(attachedObject.interactable.setRangeOfMotionOnPickup);
-
             }
 
             attachedObject.originalParent = objectToAttach.transform.parent != null ? objectToAttach.transform.parent.gameObject : null;
@@ -470,19 +320,6 @@ namespace BacklineVR.Interaction
 
             if (attachedObject.HasAttachFlag(AttachmentFlags.SnapOnAttach))
             {
-                //if (attachedObject.interactable != null && attachedObject.interactable.skeletonPoser != null && HasSkeleton())
-                //{
-                //    SteamVR_Skeleton_PoseSnapshot pose = attachedObject.interactable.skeletonPoser.GetBlendedPose(skeleton);
-
-                //    //snap the object to the center of the attach point
-                //    objectToAttach.transform.position = this.transform.TransformPoint(pose.position);
-                //    objectToAttach.transform.rotation = this.transform.rotation * pose.rotation;
-
-                //    attachedObject.initialPositionalOffset = attachedObject.handAttachmentPointTransform.InverseTransformPoint(objectToAttach.transform.position);
-                //    attachedObject.initialRotationalOffset = Quaternion.Inverse(attachedObject.handAttachmentPointTransform.rotation) * objectToAttach.transform.rotation;
-                //}
-                //else
-                {
                     if (attachmentOffset != null)
                     {
                         //offset the object from the hand by the positional and rotational difference between the offset transform and the attached object
@@ -503,17 +340,9 @@ namespace BacklineVR.Interaction
 
                     attachedObject.initialPositionalOffset = attachedObject.handAttachmentPointTransform.InverseTransformPoint(followPoint.position);
                     attachedObject.initialRotationalOffset = Quaternion.Inverse(attachedObject.handAttachmentPointTransform.rotation) * followPoint.rotation;
-                }
             }
             else
             {
-                //if (attachedObject.interactable != null && attachedObject.interactable.skeletonPoser != null && HasSkeleton())
-                //{
-                //    attachedObject.initialPositionalOffset = attachedObject.handAttachmentPointTransform.InverseTransformPoint(objectToAttach.transform.position);
-                //    attachedObject.initialRotationalOffset = Quaternion.Inverse(attachedObject.handAttachmentPointTransform.rotation) * objectToAttach.transform.rotation;
-                //}
-                //else
-                {
                     if (attachmentOffset != null)
                     {
                         //get the initial positional and rotational offsets between the hand and the offset transform
@@ -531,7 +360,6 @@ namespace BacklineVR.Interaction
                         attachedObject.initialPositionalOffset = attachedObject.handAttachmentPointTransform.InverseTransformPoint(objectToAttach.transform.position);
                         attachedObject.initialRotationalOffset = Quaternion.Inverse(attachedObject.handAttachmentPointTransform.rotation) * objectToAttach.transform.rotation;
                     }
-                }
             }
 
 
@@ -603,24 +431,7 @@ namespace BacklineVR.Interaction
                 GameObject prevTopObject = currentAttachedObject;
 
 
-                //if (attachedObjects[index].interactable != null)
-                //{
-                //    if (attachedObjects[index].interactable.hideHandOnAttach)
-                //        Show();
-
-                //    if (attachedObjects[index].interactable.hideSkeletonOnAttach && mainRenderModel != null && mainRenderModel.displayHandByDefault)
-                //        ShowSkeleton();
-
-                //    if (attachedObjects[index].interactable.hideControllerOnAttach && mainRenderModel != null && mainRenderModel.displayControllerByDefault)
-                //        ShowController();
-
-                //    if (attachedObjects[index].interactable.handAnimationOnPickup != 0)
-                //        StopAnimation();
-
-                //    if (attachedObjects[index].interactable.setRangeOfMotionOnPickup != SkeletalMotionRangeChange.None)
-                //        ResetTemporarySkeletonRangeOfMotion();
-                //}
-
+             
                 Transform parentTransform = null;
                 if (attachedObjects[index].isParentedToHand)
                 {
@@ -653,11 +464,6 @@ namespace BacklineVR.Interaction
                     }
                 }
 
-                //if (attachedObjects[index].interactable != null && attachedObjects[index].interactable.handFollowTransform && HasSkeleton())
-                //{
-                //    skeleton.transform.localPosition = Vector3.zero;
-                //    skeleton.transform.localRotation = Quaternion.identity;
-                //}
 
                 if (attachedObjects[index].attachedObject != null)
                 {
@@ -686,79 +492,8 @@ namespace BacklineVR.Interaction
 
             CleanUpAttachedObjectStack();
 
-            //if (mainRenderModel != null)
-            //    mainRenderModel.MatchHandToTransform(mainRenderModel.transform);
-            //if (hoverhighlightRenderModel != null)
-            //    hoverhighlightRenderModel.MatchHandToTransform(hoverhighlightRenderModel.transform);
+
         }
-
-
-        //-------------------------------------------------
-        // Get the world velocity of the VR Hand.
-        //-------------------------------------------------
-        //public Vector3 GetTrackedObjectVelocity(float timeOffset = 0)
-        //{
-        //    if (trackedObject == null)
-        //    {
-        //        Vector3 velocityTarget, angularTarget;
-        //        GetUpdatedAttachedVelocities(currentAttachedObjectInfo.Value, out velocityTarget, out angularTarget);
-        //        return velocityTarget;
-        //    }
-
-        //    if (isActive)
-        //    {
-        //        if (timeOffset == 0)
-        //            return Player.Instance.Origin.TransformVector(trackedObject.GetVelocity());
-        //        else
-        //        {
-        //            Vector3 velocity;
-        //            Vector3 angularVelocity;
-
-        //            trackedObject.GetVelocitiesAtTimeOffset(timeOffset, out velocity, out angularVelocity);
-        //            return Player.Instance.Origin.TransformVector(velocity);
-        //        }
-        //    }
-
-        //    return Vector3.zero;
-        //}
-
-
-        //-------------------------------------------------
-        // Get the world space angular velocity of the VR Hand.
-        //-------------------------------------------------
-        //public Vector3 GetTrackedObjectAngularVelocity(float timeOffset = 0)
-        //{
-        //    if (trackedObject == null)
-        //    {
-        //        Vector3 velocityTarget, angularTarget;
-        //        GetUpdatedAttachedVelocities(currentAttachedObjectInfo.Value, out velocityTarget, out angularTarget);
-        //        return angularTarget;
-        //    }
-
-        //    if (isActive)
-        //    {
-        //        if (timeOffset == 0)
-        //            return Player.Instance.Origin.TransformDirection(trackedObject.GetAngularVelocity());
-        //        else
-        //        {
-        //            Vector3 velocity;
-        //            Vector3 angularVelocity;
-
-        //            trackedObject.GetVelocitiesAtTimeOffset(timeOffset, out velocity, out angularVelocity);
-        //            return Player.Instance.Origin.TransformDirection(angularVelocity);
-        //        }
-        //    }
-
-        //    return Vector3.zero;
-        //}
-
-        //public void GetEstimatedPeakVelocities(out Vector3 velocity, out Vector3 angularVelocity)
-        //{
-        //    trackedObject.GetEstimatedPeakVelocities(out velocity, out angularVelocity);
-        //    velocity = Player.Instance.Origin.TransformVector(velocity);
-        //    angularVelocity = Player.Instance.Origin.TransformDirection(angularVelocity);
-        //}
-
 
         //-------------------------------------------------
         private void CleanUpAttachedObjectStack()
@@ -964,12 +699,6 @@ namespace BacklineVR.Interaction
             {
                 if (currentAttachedObjectInfo.Value.interactable != null)
                 {
-                    //SteamVR_Skeleton_PoseSnapshot pose = null;
-
-                    //if (currentAttachedObjectInfo.Value.interactable.skeletonPoser != null && HasSkeleton())
-                    //{
-                    //    pose = currentAttachedObjectInfo.Value.interactable.skeletonPoser.GetBlendedPose(skeleton);
-                    //}
 
                     if (currentAttachedObjectInfo.Value.interactable.handFollowTransform)
                     {
@@ -1028,11 +757,6 @@ namespace BacklineVR.Interaction
                         if (attachedInfo.interactable.attachEaseIn == false || attachedInfo.interactable.snapAttachEaseInCompleted)
                             UpdateAttachedVelocity(attachedInfo);
 
-                        /*if (attachedInfo.interactable.handFollowTransformPosition)
-                        {
-                            skeleton.transform.position = TargetSkeletonPosition(attachedInfo);
-                            skeleton.transform.rotation = attachedInfo.attachedObject.transform.rotation * attachedInfo.skeletonLockRotation;
-                        }*/
                     }
                     else
                     {
@@ -1099,29 +823,12 @@ namespace BacklineVR.Interaction
 
         protected Vector3 TargetItemPosition(AttachedObject attachedObject)
         {
-            //if (attachedObject.interactable != null && attachedObject.interactable.skeletonPoser != null && HasSkeleton())
-            //{
-            //    Vector3 tp = attachedObject.handAttachmentPointTransform.InverseTransformPoint(transform.TransformPoint(attachedObject.interactable.skeletonPoser.GetBlendedPose(skeleton).position));
-            //    //tp.x *= -1;
-            //    return currentAttachedObjectInfo.Value.handAttachmentPointTransform.TransformPoint(tp);
-            //}
-            //else
-            {
                 return currentAttachedObjectInfo.Value.handAttachmentPointTransform.TransformPoint(attachedObject.initialPositionalOffset);
-            }
         }
 
         protected Quaternion TargetItemRotation(AttachedObject attachedObject)
         {
-            //if (attachedObject.interactable != null && attachedObject.interactable.skeletonPoser != null && HasSkeleton())
-            //{
-            //    Quaternion tr = Quaternion.Inverse(attachedObject.handAttachmentPointTransform.rotation) * (transform.rotation * attachedObject.interactable.skeletonPoser.GetBlendedPose(skeleton).rotation);
-            //    return currentAttachedObjectInfo.Value.handAttachmentPointTransform.rotation * tr;
-            //}
-            //else
-            {
                 return currentAttachedObjectInfo.Value.handAttachmentPointTransform.rotation * attachedObject.initialRotationalOffset;
-            }
         }
 
         protected bool GetUpdatedAttachedVelocities(AttachedObject attachedObjectInfo, out Vector3 velocityTarget, out Vector3 angularTarget)

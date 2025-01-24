@@ -152,11 +152,11 @@ namespace BacklineVR.Interaction.Bow
                 // always pop balloons
                 if (rbSpeed > 0.1f || goThrough)
                 {
+                    _strikePS.SetActive(true);
                     var gobby = collision.gameObject.GetComponent<IDestructible>();
                     if (gobby == null)
                         return;
                     gobby.TakeDamage(5 * Mathf.InverseLerp(0.1f,30,prevVelocity.magnitude));
-                    _strikePS.SetActive(true);
                 }
 
                 if (goThrough)

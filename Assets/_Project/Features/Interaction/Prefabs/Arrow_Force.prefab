@@ -5999,37 +5999,73 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 240707651587170702, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1426892312828648097, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426892312828648097, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2491440633276627332, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2491440633276627332, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3220491877362386629, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220491877362386629, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3838112182448305496, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3838112182448305496, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3909789528696744348, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909789528696744348, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4263416808748396193, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4263416808748396193, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4358891906143821730, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4358891906143821730, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6016366881226331059, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6016366881226331059, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6238784219302332944, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
@@ -6049,15 +6085,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6436662279796987238, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.05
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6436662279796987238, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.05
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6436662279796987238, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.05
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6436662279796987238, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6103,21 +6139,41 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6436662279796987239, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6481378782251974090, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6481378782251974090, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6579035092230833537, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6579035092230833537, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7247094723841914286, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7247094723841914286, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7940307396940050203, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7940307396940050203, guid: 901f1af55084c4246abdbff1ba9b0665, type: 3}
+      propertyPath: scalingMode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
