@@ -1,3 +1,4 @@
+using CurseVR.Director;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace BehaviorDesigner.Runtime.Tasks
 
         public override void OnAwake()
         {
-            _combatManager = CombatManager.CombatManagerInstance;
+            _combatManager = GlobalDirector.Get<CombatManager>();
         }
 
         public override TaskStatus OnUpdate()

@@ -1,24 +1,25 @@
 using BacklineVR.Characters;
 using BacklineVR.Interaction;
 using BacklineVR.Interaction.Bow;
+using CurseVR.Director;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AttachmentFlags = BacklineVR.Interaction.Hand.AttachmentFlags;
 namespace BacklineVR.Core
 {
     public class Player : MonoBehaviour, ITargetable, IDestructible
     {
+        public bool IsLeftHanded = false;
         private CombatManager _combatManager;
         public static Player Instance;
         public Transform Head;
         public Transform Origin;
 
         [SerializeField]
-        private Interactable _longBow;
+        private Interactable_Bad _longBow;
 
         [SerializeField]
-        private Interactable _arrowHand;
+        private Interactable_Bad _arrowHand;
 
         [SerializeField]
         private Hand _leftHand;
@@ -30,10 +31,11 @@ namespace BacklineVR.Core
         public bool IsDestroyed() => _isKilled;
         public bool IsStaggered() => _isStaggered;
 
-        private AttachmentFlags _flags = AttachmentFlags.SnapOnAttach | AttachmentFlags.ParentToHand | AttachmentFlags.TurnOnKinematic | AttachmentFlags.TurnOffGravity | AttachmentFlags.AllowSidegrade;
         public GameObject GetGameObject() => this.gameObject;
         public Transform GetMainTransform() => this.transform;
         public virtual TargetType GetTargetType() => TargetType.Player;
+
+        private InputProvider _inputProvider;
         private void Awake()
         {
             Instance = this;
@@ -41,10 +43,11 @@ namespace BacklineVR.Core
         // Start is called before the first frame update
         void Start()
         {
-            _combatManager = CombatManager.CombatManagerInstance;
+            _inputProvider = GlobalDirector.Get<InputProvider>();
+            _combatManager = GlobalDirector.Get<CombatManager>();
             _combatManager.OnAllySpawned(this);
-            _leftHand.AttachObject(_longBow.gameObject, GrabTypes.Scripted);
-            _rightHand.AttachObject(_arrowHand.gameObject, GrabTypes.Scripted);
+            //_leftHand.AttachObject(_longBow.gameObject, GrabTypes.Scripted);
+            //_rightHand.AttachObject(_arrowHand.gameObject, GrabTypes.Scripted);
         }
 
         // Update is called once per frame
@@ -54,6 +57,21 @@ namespace BacklineVR.Core
         }
         public void TakeDamage(float damageAmount)
         {
+        }
+        public void TriggerHaptics(bool useDominant, float microSecondsDuration)
+        {
+            float seconds = (float)microSecondsDuration / 1000000f;
+            //If use dominant and left handed, second case used since XOR
+            var handSide = useDominant ^ IsLeftHanded ? HandSide.Right : HandSide.Left;
+            _inputProvider.RequestHapticPulse(handSide, 1, seconds, 1.5f / seconds);
+        }
+        public Transform GetArrowNockTransform()
+        {
+            if (IsLeftHanded)
+            {
+                return _leftHand.ArrowNockTransform;
+            }
+            return _rightHand.ArrowNockTransform;
         }
     }
 }

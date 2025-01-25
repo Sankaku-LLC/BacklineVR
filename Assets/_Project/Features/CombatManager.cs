@@ -1,34 +1,25 @@
+using CurseVR.Director;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows;
 
 
-public class CombatManager : MonoBehaviour
+public class CombatManager : MonoBehaviour, IGlobalComponent
 {
-    public static CombatManager CombatManagerInstance;
     public readonly List<EnemyCharacter> AllSpawnedEnemies = new List<EnemyCharacter>(32);
     public readonly List<ITargetable> AllSpawnedAllies = new List<ITargetable>(32);
-    void Awake()
+    public void OnInitialize()
     {
-        if (CombatManagerInstance)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        CombatManagerInstance = this;
-
     }
 
-    private void Start()
+    public void OnStart()
     {
-        DontDestroyOnLoad(CombatManagerInstance.gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public Type GetManagerType()
     {
-        
+        return typeof(CombatManager);
     }
     public void OnEnemySpawned(EnemyCharacter enemy)
     {
@@ -105,5 +96,4 @@ public class CombatManager : MonoBehaviour
     {
         return !Mathf.Approximately(newNumber, 0) && newNumber < currentNumber;
     }
-   
 }

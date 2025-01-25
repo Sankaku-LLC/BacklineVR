@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using BehaviorDesigner.Runtime;
+using CurseVR.Director;
 
 public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
 {
@@ -44,7 +45,7 @@ public class GenericCharacter : MonoBehaviour, ITargetable, IDestructible
         _nav = GetComponent<NavMeshAgent>();
         _bt = GetComponent<BehaviorTree>();
         _rb = GetComponent<Rigidbody>();
-        _combatManager = CombatManager.CombatManagerInstance;
+        _combatManager = GlobalDirector.Get<CombatManager>();
         CurrentHealth = MaxHealth;
         CurrentStagger = 0f;
         _anim = GetComponent<Animator>();
