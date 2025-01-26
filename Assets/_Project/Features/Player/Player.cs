@@ -16,10 +16,10 @@ namespace BacklineVR.Core
         public Transform Origin;
 
         [SerializeField]
-        private Interactable_Bad _longBow;
+        private Interactable _longBow;
 
         [SerializeField]
-        private Interactable_Bad _arrowHand;
+        private Interactable _quiver;
 
         [SerializeField]
         private Hand _leftHand;
@@ -46,14 +46,51 @@ namespace BacklineVR.Core
             _inputProvider = GlobalDirector.Get<InputProvider>();
             _combatManager = GlobalDirector.Get<CombatManager>();
             _combatManager.OnAllySpawned(this);
-            //_leftHand.AttachObject(_longBow.gameObject, GrabTypes.Scripted);
-            //_rightHand.AttachObject(_arrowHand.gameObject, GrabTypes.Scripted);
+            _leftHand.AttachObject(_longBow);
+            _rightHand.AttachObject(_quiver);
+            _inputProvider.OnGripDown += OnGripDown;
+            _inputProvider.OnGripUp += OnGripUp;
+            _inputProvider.OnTriggerDown += OnTriggerDown;
+            _inputProvider.OnTriggerUp += OnTriggerUp;
         }
 
         // Update is called once per frame
         void Update()
         {
 
+        }
+        private void OnGripDown(HandSide side, float amount)
+        {
+            if(side == HandSide.Left)
+            {
+                _longBow.OnGrab?.Invoke();
+                return;
+            }
+            _quiver.OnGrab?.Invoke();
+        }
+        private void OnGripUp(HandSide side)
+        {
+            if (side == HandSide.Left)
+            {
+                return;
+            }
+            _quiver.OnRelease?.Invoke();
+        }
+        private void OnTriggerDown(HandSide side, float amount)
+        {
+            if (side == HandSide.Left)
+            {
+                return;
+            }
+            _quiver.OnActivate?.Invoke();
+        }
+        private void OnTriggerUp(HandSide side)
+        {
+            if (side == HandSide.Left)
+            {
+                return;
+            }
+            _quiver.OnDeactivate?.Invoke();
         }
         public void TakeDamage(float damageAmount)
         {

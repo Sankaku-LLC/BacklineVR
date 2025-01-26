@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &793220133731518485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8246984777044372633}
+  m_Layer: 0
+  m_Name: ArrowTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8246984777044372633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793220133731518485}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6754439562524561442}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1434908191773033629
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +64,7 @@ Transform:
   - {fileID: 2382813490336939609}
   - {fileID: 7209156362558243626}
   - {fileID: 5541495787800662762}
+  - {fileID: 6754439562524561442}
   m_Father: {fileID: 6996940100890143038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5386021140594152086
@@ -49,17 +81,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OtherHand: {fileID: 3913557393326905019}
   HandSide: 1
-  _inputProvider: {fileID: 0}
   hoverSphereTransform: {fileID: 2382813490336939609}
   hoverSphereRadius: 0.075
   hoverLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   hoverUpdateInterval: 0.1
-  objectAttachmentPoint: {fileID: 7209156362558243626}
-  showDebugText: 1
-  spewDebugText: 1
-  showDebugInteractables: 1
+  _objectAttachmentPoint: {fileID: 7209156362558243626}
+  showDebugText: 0
+  spewDebugText: 0
+  showDebugInteractables: 0
+  _arrowNockTransform: {fileID: 6754439562524561442}
+--- !u!1 &2574607038964079569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3118844434634344133}
+  m_Layer: 0
+  m_Name: ArrowTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3118844434634344133
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2574607038964079569}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3783807198655685972}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2700522404029598695
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,6 +156,38 @@ Transform:
   - {fileID: 8190157810128951704}
   - {fileID: 5809133533129700556}
   m_Father: {fileID: 1473612737010122200}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2720180639941608500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3783807198655685972}
+  m_Layer: 0
+  m_Name: ArrowTransformParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3783807198655685972
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2720180639941608500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.073854074, y: 0, z: 0, w: 0.9972691}
+  m_LocalPosition: {x: 0.008, y: 0.018, z: 0.074}
+  m_LocalScale: {x: 1, y: 1, z: 0.991245}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3118844434634344133}
+  m_Father: {fileID: 8190157810128951704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3429974589257155263
 GameObject:
@@ -467,6 +562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23354bbe98e58804c8c03b7353eb94dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsLeftHanded: 0
   Head: {fileID: 6464553854560899243}
   Origin: {fileID: 1473612737010122200}
   _longBow: {fileID: 0}
@@ -569,6 +665,7 @@ Transform:
   - {fileID: 2746964322008270921}
   - {fileID: 5101216111451658838}
   - {fileID: 4711190439877615918}
+  - {fileID: 3783807198655685972}
   m_Father: {fileID: 6996940100890143038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3913557393326905019
@@ -585,17 +682,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OtherHand: {fileID: 5386021140594152086}
   HandSide: 0
-  _inputProvider: {fileID: 0}
   hoverSphereTransform: {fileID: 2746964322008270921}
   hoverSphereRadius: 0.075
   hoverLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   hoverUpdateInterval: 0.1
-  objectAttachmentPoint: {fileID: 5101216111451658838}
-  showDebugText: 1
-  spewDebugText: 1
-  showDebugInteractables: 1
+  _objectAttachmentPoint: {fileID: 5101216111451658838}
+  showDebugText: 0
+  spewDebugText: 0
+  showDebugInteractables: 0
+  _arrowNockTransform: {fileID: 3783807198655685972}
 --- !u!1 &5461882082401074412
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,7 +785,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: a4a697312f6e7744b9726426c9e2c5cc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -710,6 +807,38 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6440681100527177656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6754439562524561442}
+  m_Layer: 0
+  m_Name: ArrowTransformParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6754439562524561442
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6440681100527177656}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.073854074, y: 0, z: 0, w: 0.9972691}
+  m_LocalPosition: {x: -0.008, y: 0.018, z: 0.074}
+  m_LocalScale: {x: 1, y: 1, z: 0.991245}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8246984777044372633}
+  m_Father: {fileID: 5809133533129700556}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6665694891186700322
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,7 +900,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 6eb9f7116e4186442b220e447c527cac, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

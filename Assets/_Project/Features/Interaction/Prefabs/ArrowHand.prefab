@@ -205,8 +205,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400276}
-  - component: {fileID: 114000012696964694}
   - component: {fileID: 11447524}
+  - component: {fileID: 5621424129718652896}
   m_Layer: 0
   m_Name: ArrowHand
   m_TagString: Untagged
@@ -232,54 +232,6 @@ Transform:
   - {fileID: 4000011047323824}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114000012696964694
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 187848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b93b6a877adcbf94c89a9d6e0c0e844d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hideHandOnAttach: 0
-  hideSkeletonOnAttach: 0
-  hideControllerOnAttach: 1
-  handAnimationOnPickup: 0
-  useHandObjectAttachmentPoint: 0
-  attachEaseIn: 0
-  snapAttachEaseInCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  snapAttachEaseInTime: 0.15
-  snapAttachEaseInCompleted: 0
-  handFollowTransform: 1
-  highlightOnHover: 0
-  hideHighlight: []
-  hoverPriority: 0
 --- !u!114 &11447524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,16 +245,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _forceArrow: {fileID: 173732, guid: 81fc1450441aca64e8cc1a0e14b1aa77, type: 3}
-  _fireArrow: {fileID: 173732, guid: bdb2e93645e7f5346a42c94f6b238087, type: 3}
-  _divineArrow: {fileID: 173732, guid: 991e11eb7a303f0498d9d1fc3c866b18, type: 3}
-  _lifeArrow: {fileID: 173732, guid: 1afb533c865aee74499b5bb73ff8578f, type: 3}
-  arrowNockTransform: {fileID: 413922}
   nockDistance: 0.1
   lerpCompleteDistance: 0.08
   rotationLerpThreshold: 0.15
   positionLerpThreshold: 0.15
   arrowSpawnSound: {fileID: 11498220}
-  maxArrowCount: 10
+--- !u!114 &5621424129718652896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2b91416e86ca0f45bf8214b3897fe8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseHandObjectAttachmentPoint: 1
+  attachEaseIn: 0
+  snapAttachEaseInCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  snapAttachEaseInTime: 0.15
+  snapAttachEaseInCompleted: 0
+  handFollowTransform: 1
+  HoverPriority: 0
 --- !u!1 &191840
 GameObject:
   m_ObjectHideFlags: 0

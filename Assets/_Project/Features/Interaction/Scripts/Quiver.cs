@@ -6,16 +6,8 @@ using Unity.XR.CoreUtils;
 
 namespace BacklineVR.Interaction.Bow
 {
-    public enum GrabTypes
-    {
-        None,
-        Trigger,
-        Pinch,
-        Grip,
-        Scripted,
-    }
-    //-------------------------------------------------------------------------
-    public class Quiver : MonoBehaviour, Interactable
+    [RequireComponent(typeof(Interactable))]
+    public class Quiver : MonoBehaviour
 	{
 		private Longbow bow;
 
@@ -38,9 +30,17 @@ namespace BacklineVR.Interaction.Bow
 
 		private bool _nockReady = true;
         private Transform _arrowNockTransform;
+
+        private Interactable _interactable;
 		//-------------------------------------------------
 		void Awake()
 		{
+            _interactable = GetComponent<Interactable>();
+            _interactable.OnGrab += OnGrab;
+            _interactable.OnRelease += OnRelease;
+            _interactable.OnActivate += OnActivate;
+            _interactable.OnDeactivate += OnDeactivate;
+            _interactable.OnHeldUpdate += OnUpdate;
         }
         private void Start()
         {
@@ -61,11 +61,6 @@ namespace BacklineVR.Interaction.Bow
         public void OnRelease()
         {
 			//On dropping the item
-        }
-
-        public Pose GetGrabPose()
-        {
-			return _arrowNockTransform.GetWorldPose();
         }
 
         public void OnActivate()

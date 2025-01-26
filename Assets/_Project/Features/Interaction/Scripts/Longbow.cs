@@ -12,7 +12,8 @@ using BacklineVR.Core;
 namespace BacklineVR.Interaction.Bow
 {
 	//-------------------------------------------------------------------------
-	public class Longbow : MonoBehaviour, Interactable
+	[RequireComponent(typeof(Interactable))]
+	public class Longbow : MonoBehaviour
 	{
 		public Transform pivotTransform;
 		public Transform handleTransform;
@@ -70,10 +71,18 @@ namespace BacklineVR.Interaction.Bow
 		private bool _isGrabbed = false;
 		private Transform _arrowNockTransform;
 
+		private Interactable _interactable;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
 			_animator.speed = 0;
+
+			_interactable = GetComponent<Interactable>();
+			_interactable.OnGrab += OnGrab;
+			_interactable.OnRelease += OnRelease;
+			_interactable.OnActivate += OnActivate;
+			_interactable.OnDeactivate += OnDeactivate;
+			_interactable.OnHeldUpdate += OnUpdate;
         }
 
         private void Update()
@@ -113,19 +122,12 @@ namespace BacklineVR.Interaction.Bow
 			_isGrabbed = false;
         }
 
-        public Pose GetGrabPose()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void OnActivate()
         {
-            throw new System.NotImplementedException();
         }
 
         public void OnDeactivate()
         {
-            throw new System.NotImplementedException();
         }
 		public void OnUpdate()
 		{
