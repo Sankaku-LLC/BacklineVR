@@ -1838,6 +1838,7 @@ Transform:
   m_Children:
   - {fileID: 433756}
   - {fileID: 485124}
+  - {fileID: 2350236712435425235}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -71.804, y: 180, z: 0}
 --- !u!114 &11455624
@@ -1928,6 +1929,8 @@ MonoBehaviour:
   snapAttachEaseInCompleted: 0
   handFollowTransform: 1
   HoverPriority: 0
+  AttachmentFlags: 109
+  AttachmentCriteria: 2
 --- !u!1 &173948
 GameObject:
   m_ObjectHideFlags: 0
@@ -2309,3 +2312,56 @@ Transform:
   - {fileID: 444332}
   m_Father: {fileID: 450086}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2188098407896113836
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2350236712435425235}
+  - component: {fileID: 980198180580160912}
+  m_Layer: 6
+  m_Name: InteractionVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2350236712435425235
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2188098407896113836}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 497004}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &980198180580160912
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2188098407896113836}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.19
+  m_Center: {x: 0, y: 0, z: 0}

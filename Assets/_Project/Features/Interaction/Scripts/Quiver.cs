@@ -9,7 +9,8 @@ namespace BacklineVR.Interaction.Bow
     [RequireComponent(typeof(Interactable))]
     public class Quiver : MonoBehaviour
 	{
-		private Longbow bow;
+        [SerializeField]
+		private Longbow _bow;
 
 		private GameObject currentArrow;
 
@@ -44,65 +45,64 @@ namespace BacklineVR.Interaction.Bow
         }
         private void Start()
         {
+            _arrowNockTransform = Player.Instance.GetArrowNockTransform();
         }
 
 
         public void OnGrab()
         {
-            _arrowNockTransform = Player.Instance.GetArrowNockTransform();
+            if(currentArrow != null)
+            {
+                Debug.LogError("Arrow is present but grabbed was called again before release!");
+                return;
+            }
             //TODO: Disable grab casting
             currentArrow = Instantiate(_forceArrow, _arrowNockTransform.position, _arrowNockTransform.rotation);
             currentArrow.transform.parent = _arrowNockTransform;
             Util.ResetTransform(currentArrow.transform);
             arrowSpawnSound.Play();
-
+            _nockReady = true;
         }
 
         public void OnRelease()
         {
-			//On dropping the item
+            _nockReady = false;
+            //On dropping the item
+            if (!nocked)
+            {
+                DestroyArrow();
+                return;
+            }
+
+            if (_bow.pulled) // If bow is pulled back far enough, fire arrow, otherwise reset arrow in arrowhand
+            {
+                FireArrow();
+            }
+            else
+            {
+                _arrowNockTransform.rotation = currentArrow.transform.rotation;
+                nocked = false;
+                _bow.ReleaseNock();
+                DestroyArrow();
+            }
+
+            _bow.StartRotationLerp(); // Arrow is releasing from the bow, tell the bow to lerp back to controller rotation
         }
 
         public void OnActivate()
         {
-			//Engage knock
-			_nockReady = true;
         }
 
         public void OnDeactivate()
         {
-            // If arrow is nocked, and we release the trigger
-            if (nocked)
-            {
-                if (bow.pulled) // If bow is pulled back far enough, fire arrow, otherwise reset arrow in arrowhand
-                {
-                    FireArrow();
-                }
-                else
-                {
-                    _arrowNockTransform.rotation = currentArrow.transform.rotation;
-                    currentArrow.transform.parent = _arrowNockTransform;
-                    Util.ResetTransform(currentArrow.transform);
-                    nocked = false;
-                    bow.ReleaseNock();
-                }
-
-                bow.StartRotationLerp(); // Arrow is releasing from the bow, tell the bow to lerp back to controller rotation
-            }
-			_nockReady = false;
         }
 
         public void OnUpdate()
         {
-            if (bow == null)
-            {
-                return;
-            }
-
             if (currentArrow == null)
                 return;
 
-            float distanceToNockPosition = Vector3.Distance(transform.parent.position, bow.nockTransform.position);
+            float distanceToNockPosition = Vector3.Distance(_arrowNockTransform.parent.position, _bow.nockTransform.position);
 
             // If there's an arrow spawned in the hand and it's not nocked yet
             if (!nocked)
@@ -112,7 +112,7 @@ namespace BacklineVR.Interaction.Bow
                 {
                     float lerp = Util.RemapNumber(distanceToNockPosition, rotationLerpThreshold, lerpCompleteDistance, 0, 1);
 
-                    _arrowNockTransform.rotation = Quaternion.Lerp(_arrowNockTransform.parent.rotation, bow.nockRestTransform.rotation, lerp);
+                    _arrowNockTransform.rotation = Quaternion.Lerp(_arrowNockTransform.parent.rotation, _bow.nockRestTransform.rotation, lerp);
                 }
                 else // Not close enough for rotation lerp, reset rotation
                 {
@@ -126,7 +126,7 @@ namespace BacklineVR.Interaction.Bow
 
                     posLerp = Mathf.Clamp(posLerp, 0f, 1f);
 
-                    _arrowNockTransform.position = Vector3.Lerp(_arrowNockTransform.parent.position, bow.nockRestTransform.position, posLerp);
+                    _arrowNockTransform.position = Vector3.Lerp(_arrowNockTransform.parent.position, _bow.nockRestTransform.position, posLerp);
                 }
                 else // Not close enough for position lerp, reset position
                 {
@@ -157,7 +157,7 @@ namespace BacklineVR.Interaction.Bow
                     if (!inNockRange)
                     {
                         inNockRange = true;
-                        bow.ArrowInPosition();
+                        _bow.ArrowInPosition();
                     }
                 }
                 else
@@ -172,8 +172,8 @@ namespace BacklineVR.Interaction.Bow
                 if (inNockRange && _nockReady && !nocked)
                 {
                     nocked = true;
-                    bow.StartNock(this);
-                    currentArrow.transform.parent = bow.nockTransform;
+                    _bow.StartNock(this);
+                    currentArrow.transform.parent = _bow.nockTransform;
                     Util.ResetTransform(currentArrow.transform);
                     Util.ResetTransform(_arrowNockTransform);
                 }
@@ -195,18 +195,24 @@ namespace BacklineVR.Interaction.Bow
 			arrow.arrowHeadRB.useGravity = true;
 			arrow.arrowHeadRB.transform.GetComponent<BoxCollider>().enabled = true;
 
-			arrow.arrowHeadRB.AddForce( currentArrow.transform.forward * bow.GetArrowVelocity(), ForceMode.VelocityChange );
+			arrow.arrowHeadRB.AddForce( currentArrow.transform.forward * _bow.GetArrowVelocity(), ForceMode.VelocityChange );
 			arrow.arrowHeadRB.AddTorque( currentArrow.transform.forward * 10 );
 
 			nocked = false;
 
-			currentArrow.GetComponent<Arrow>().ArrowReleased( bow.GetArrowVelocity() );
-			bow.ArrowReleased();
+			currentArrow.GetComponent<Arrow>().ArrowReleased( _bow.GetArrowVelocity() );
+			_bow.ArrowReleased();
 
 			StartCoroutine( ArrowReleaseHaptics() );
 
 			currentArrow = null;
 		}
+        private void DestroyArrow()
+        {
+            Debug.LogError("Destroying arrow");
+            Destroy(currentArrow);
+            currentArrow = null;
+        }
 
 		//-------------------------------------------------
 		private IEnumerator ArrowReleaseHaptics()

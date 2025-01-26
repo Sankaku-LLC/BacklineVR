@@ -11,115 +11,121 @@ using BacklineVR.Core;
 
 namespace BacklineVR.Interaction.Bow
 {
-	//-------------------------------------------------------------------------
-	[RequireComponent(typeof(Interactable))]
-	public class Longbow : MonoBehaviour
-	{
-		public Transform pivotTransform;
-		public Transform handleTransform;
+    //-------------------------------------------------------------------------
+    [RequireComponent(typeof(Interactable))]
+    public class Longbow : MonoBehaviour
+    {
+        public Transform pivotTransform;
+        public Transform handleTransform;
 
-		public Transform nockTransform;
-		public Transform nockRestTransform;
+        public Transform nockTransform;
+        public Transform nockRestTransform;
 
-		public bool nocked;
-		public bool pulled;
+        public bool nocked;
+        public bool pulled;
 
-		private const float minPull = 0.05f;
-		private const float maxPull = 0.5f;
-		private float nockDistanceTravelled = 0f;
-		private float hapticDistanceThreshold = 0.01f;
-		private float lastTickDistance;
-		private const float bowPullPulseStrengthLow = 100;
-		private const float bowPullPulseStrengthHigh = 500;
-		private Vector3 bowLeftVector;
+        private const float minPull = 0.05f;
+        private const float maxPull = 0.5f;
+        private float nockDistanceTravelled = 0f;
+        private float hapticDistanceThreshold = 0.01f;
+        private float lastTickDistance;
+        private const float bowPullPulseStrengthLow = 100;
+        private const float bowPullPulseStrengthHigh = 500;
+        private Vector3 bowLeftVector;
 
-		public float arrowMinVelocity = 3f;
-		public float arrowMaxVelocity = 30f;
-		private float arrowVelocity = 30f;
+        public float arrowMinVelocity = 3f;
+        public float arrowMaxVelocity = 30f;
+        private float arrowVelocity = 30f;
 
-		private float minStrainTickTime = 0.1f;
-		private float maxStrainTickTime = 0.5f;
-		private float nextStrainTick = 0;
+        private float minStrainTickTime = 0.1f;
+        private float maxStrainTickTime = 0.5f;
+        private float nextStrainTick = 0;
 
-		private bool lerpBackToZeroRotation;
-		private float lerpStartTime;
-		private float lerpDuration = 0.15f;
-		private Quaternion lerpStartRotation;
+        private bool lerpBackToZeroRotation;
+        private float lerpStartTime;
+        private float lerpDuration = 0.15f;
+        private Quaternion lerpStartRotation;
 
-		private float nockLerpStartTime;
+        private float nockLerpStartTime;
 
-		private Quaternion nockLerpStartRotation;
+        private Quaternion nockLerpStartRotation;
 
-		public float drawOffset = 0.06f;
+        public float drawOffset = 0.06f;
 
 
-		private Vector3 lateUpdatePos;
-		private Quaternion lateUpdateRot;
+        private Vector3 lateUpdatePos;
+        private Quaternion lateUpdateRot;
 
-		public SoundBowClick drawSound;
-		private float drawTension;
-		public SoundPlayOneshot arrowSlideSound;
-		public SoundPlayOneshot releaseSound;
-		public SoundPlayOneshot nockSound;
+        public SoundBowClick drawSound;
+        private float drawTension;
+        public SoundPlayOneshot arrowSlideSound;
+        public SoundPlayOneshot releaseSound;
+        public SoundPlayOneshot nockSound;
 
         //Linear mapping code
         private Animator _animator;
-		private int _framesUnchanged;
-		private float _currentValue;
-		private float _targetValue;
+        private int _framesUnchanged;
+        private float _currentValue;
+        private float _targetValue;
 
-		private bool _isGrabbed = false;
-		private Transform _arrowNockTransform;
+        private bool _isGrabbed = false;
 
-		private Interactable _interactable;
+        [SerializeField]
+        private GameObject _visuals;
+        private Transform _arrowNockTransform;
+
+        private Interactable _interactable;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-			_animator.speed = 0;
+            _animator.speed = 0;
 
-			_interactable = GetComponent<Interactable>();
-			_interactable.OnGrab += OnGrab;
-			_interactable.OnRelease += OnRelease;
-			_interactable.OnActivate += OnActivate;
-			_interactable.OnDeactivate += OnDeactivate;
-			_interactable.OnHeldUpdate += OnUpdate;
+            _interactable = GetComponent<Interactable>();
+            _interactable.OnGrab += OnGrab;
+            _interactable.OnRelease += OnRelease;
+            _interactable.OnActivate += OnActivate;
+            _interactable.OnDeactivate += OnDeactivate;
+            _interactable.OnHeldUpdate += OnUpdate;
         }
-
+        private void Start()
+        {
+            _arrowNockTransform = Player.Instance.GetArrowNockTransform();
+        }
         private void Update()
         {
-            if(_currentValue != _targetValue)
-			{
-				_currentValue = _targetValue;
-				_animator.enabled = true;
-				_animator.Play(0, 0, _currentValue);
-				_framesUnchanged = 0;
-			}
-			else
-			{
-				_framesUnchanged++;
-				if(_framesUnchanged > 2)
-				{
-					_animator.enabled = false;
-				}
-			}
+            if (_currentValue != _targetValue)
+            {
+                _currentValue = _targetValue;
+                _animator.enabled = true;
+                _animator.Play(0, 0, _currentValue);
+                _framesUnchanged = 0;
+            }
+            else
+            {
+                _framesUnchanged++;
+                if (_framesUnchanged > 2)
+                {
+                    _animator.enabled = false;
+                }
+            }
         }
 
         //-------------------------------------------------
         public void OnGrab()
         {
-			_isGrabbed = true;
-
+            _isGrabbed = true;
+            _visuals.SetActive(true);
             if (Player.Instance.IsLeftHanded)
                 pivotTransform.localScale = new Vector3(1f, -1f, 1f);
             else
                 pivotTransform.localScale = new Vector3(1f, 1f, 1f);
 
-			_arrowNockTransform = Player.Instance.GetArrowNockTransform();
         }
 
         public void OnRelease()
         {
-			_isGrabbed = false;
+            _visuals.SetActive(false);
+            _isGrabbed = false;
         }
 
         public void OnActivate()
@@ -129,8 +135,8 @@ namespace BacklineVR.Interaction.Bow
         public void OnDeactivate()
         {
         }
-		public void OnUpdate()
-		{
+        public void OnUpdate()
+        {
             if (nocked)
             {
                 Vector3 nockToarrowHand = (_arrowNockTransform.parent.position - nockRestTransform.position); // Vector from bow nock transform to arrowhand nock transform - used to align bow when drawing
@@ -220,87 +226,87 @@ namespace BacklineVR.Interaction.Bow
             }
         }
 
-		//-------------------------------------------------
-		public void ArrowReleased()
-		{
-			nocked = false;
+        //-------------------------------------------------
+        public void ArrowReleased()
+        {
+            nocked = false;
 
-			if ( releaseSound != null )
-			{
-				releaseSound.Play();
-			}
+            if (releaseSound != null)
+            {
+                releaseSound.Play();
+            }
 
-			this.StartCoroutine( this.ResetDrawAnim() );
-		}
-
-
-		//-------------------------------------------------
-		private IEnumerator ResetDrawAnim()
-		{
-			float startTime = Time.time;
-			float startLerp = drawTension;
-
-			while ( Time.time < ( startTime + 0.02f ) )
-			{
-				float lerp = Util.RemapNumberClamped( Time.time, startTime, startTime + 0.02f, startLerp, 0f );
-				_targetValue = lerp;
-				yield return null;
-			}
-
-			_targetValue = 0;
-
-			yield break;
-		}
+            this.StartCoroutine(this.ResetDrawAnim());
+        }
 
 
-		//-------------------------------------------------
-		public float GetArrowVelocity()
-		{
-			return arrowVelocity;
-		}
+        //-------------------------------------------------
+        private IEnumerator ResetDrawAnim()
+        {
+            float startTime = Time.time;
+            float startLerp = drawTension;
+
+            while (Time.time < (startTime + 0.02f))
+            {
+                float lerp = Util.RemapNumberClamped(Time.time, startTime, startTime + 0.02f, startLerp, 0f);
+                _targetValue = lerp;
+                yield return null;
+            }
+
+            _targetValue = 0;
+
+            yield break;
+        }
 
 
-		//-------------------------------------------------
-		public void StartRotationLerp()
-		{
-			lerpStartTime = Time.time;
-			lerpBackToZeroRotation = true;
-			lerpStartRotation = pivotTransform.localRotation;
-
-			Util.ResetTransform( nockTransform );
-		}
+        //-------------------------------------------------
+        public float GetArrowVelocity()
+        {
+            return arrowVelocity;
+        }
 
 
-		//-------------------------------------------------
-		public void StartNock( Quiver currentArrowHand )
-		{
-			nocked = true;
-			nockLerpStartTime = Time.time;
-			nockLerpStartRotation = pivotTransform.rotation;
+        //-------------------------------------------------
+        public void StartRotationLerp()
+        {
+            lerpStartTime = Time.time;
+            lerpBackToZeroRotation = true;
+            lerpStartRotation = pivotTransform.localRotation;
 
-			// Sound of arrow sliding on nock as it's being pulled back
-			arrowSlideSound.Play();
-
-			// Decide which hand we're drawing with and lerp to the correct side
-		}
+            Util.ResetTransform(nockTransform);
+        }
 
 
-		//-------------------------------------------------
-		public void ArrowInPosition()
-		{
-			if ( nockSound != null )
-			{
-				nockSound.Play();
-			}
-		}
+        //-------------------------------------------------
+        public void StartNock(Quiver currentArrowHand)
+        {
+            nocked = true;
+            nockLerpStartTime = Time.time;
+            nockLerpStartRotation = pivotTransform.rotation;
+
+            // Sound of arrow sliding on nock as it's being pulled back
+            arrowSlideSound.Play();
+
+            // Decide which hand we're drawing with and lerp to the correct side
+        }
 
 
-		//-------------------------------------------------
-		public void ReleaseNock()
-		{
-			// ArrowHand tells us to do this when we release the buttons when bow is nocked but not drawn far enough
-			nocked = false;
-			this.StartCoroutine( this.ResetDrawAnim() );
-		}
+        //-------------------------------------------------
+        public void ArrowInPosition()
+        {
+            if (nockSound != null)
+            {
+                nockSound.Play();
+            }
+        }
+
+
+        //-------------------------------------------------
+        public void ReleaseNock()
+        {
+            // ArrowHand tells us to do this when we release the buttons when bow is nocked but not drawn far enough
+            nocked = false;
+            this.StartCoroutine(this.ResetDrawAnim());
+        }
     }
 }

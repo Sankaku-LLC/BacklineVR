@@ -114,23 +114,36 @@ namespace BacklineVR.Interaction
         }
         private void OnGripDownEvent(HandSide handSide, float value)
         {
-            _isGripDown[(int)handSide] = true;
-            OnGripDown?.Invoke(handSide, value);
+            if (!_isGripDown[(int)handSide])
+            {
+                _isGripDown[(int)handSide] = true;
+                OnGripDown?.Invoke(handSide, value);
+            }
         }
         private void OnGripUpEvent(HandSide handSide)
         {
-            _isGripDown[(int)handSide] = false;
-            OnGripUp?.Invoke(handSide);
+            if (_isGripDown[(int)handSide])
+            {
+                _isGripDown[(int)handSide] = false;
+                OnGripUp?.Invoke(handSide);
+            }
         }
         private void OnTriggerDownEvent(HandSide handSide, float value)
         {
-            _isTriggerDown[(int)handSide] = true;
-            OnTriggerDown?.Invoke(handSide, value);
+            if (!_isTriggerDown[(int)handSide])
+            {
+                _isTriggerDown[(int)handSide] = true;
+                OnTriggerDown?.Invoke(handSide, value);
+            }
+
         }
         private void OnTriggerUpEvent(HandSide handSide)
         {
-            _isTriggerDown[(int)handSide] = false;
-            OnTriggerUp?.Invoke(handSide);
+            if (_isTriggerDown[(int)handSide])
+            {
+                _isTriggerDown[(int)handSide] = false;
+                OnTriggerUp?.Invoke(handSide);
+            }
         }
         private void OnRightPadUpdated(CallbackContext context)
         {

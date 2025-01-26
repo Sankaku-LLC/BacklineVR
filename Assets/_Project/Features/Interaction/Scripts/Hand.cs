@@ -14,18 +14,6 @@ namespace BacklineVR.Interaction
     public enum HandSide { Left, Right };
     public class Hand : MonoBehaviour
     {
-        // The flags used to determine how an object is attached to the hand.
-        [Flags]
-        public enum AttachmentFlags
-        {
-            SnapOnAttach = 1 << 0, // The object should snap to the position of the specified attachment point on the hand.
-            DetachFromOtherHand = 1 << 2, // This object will be detached from the other hand.
-            ParentToHand = 1 << 3, // The object will be parented to the hand.
-            VelocityMovement = 1 << 4, // The object will attempt to move to match the position and rotation of the hand.
-            TurnOnKinematic = 1 << 5, // The object will not respond to external physics.
-            TurnOffGravity = 1 << 6, // The object will not respond to external physics.
-        };
-
         public const AttachmentFlags DEFAULT_ATTACHMENT_FLAGS = AttachmentFlags.ParentToHand |
                                                               AttachmentFlags.DetachFromOtherHand |
                                                               AttachmentFlags.TurnOnKinematic |
@@ -89,6 +77,8 @@ namespace BacklineVR.Interaction
 
         private Player playerInstance;
 
+        public bool IsDominantHand;
+
         //-------------------------------------------------
         protected virtual void Awake()
         {
@@ -98,24 +88,9 @@ namespace BacklineVR.Interaction
             if (_objectAttachmentPoint == null)
                 _objectAttachmentPoint = this.transform;
         }
-
-
-
-
-        //-------------------------------------------------
         private void Start()
         {
-            // save off player instance
-            playerInstance = Player.Instance;
-            if (!playerInstance)
-            {
-                Debug.LogError("<b>[SteamVR Interaction]</b> No player instance found in Hand Start()", this);
-            }
-
-            if (this.gameObject.layer == 0)
-                Debug.LogWarning("<b>[SteamVR Interaction]</b> Hand is on default layer. This puts unnecessary strain on hover checks as it is always true for hand colliders (which are then ignored).", this);
-            else
-                hoverLayerMask &= ~(1 << this.gameObject.layer); //ignore self for hovering
+            IsDominantHand = (Player.Instance.IsLeftHanded) == (HandSide == HandSide.Left);
         }
 
         //-------------------------------------------------
@@ -133,6 +108,7 @@ namespace BacklineVR.Interaction
                         if (spewDebugText)
                             HandDebugLog("HoverEnd " + _hoveringInteractable.gameObject);
                         _hoveringInteractable.OnStopHover?.Invoke();
+                        Player.Instance.TriggerHaptics(IsDominantHand, 300);
                     }
 
                     _hoveringInteractable = value;
@@ -142,6 +118,7 @@ namespace BacklineVR.Interaction
                         if (spewDebugText)
                             HandDebugLog("HoverBegin " + _hoveringInteractable.gameObject);
                         _hoveringInteractable.OnStartHover?.Invoke();
+                        Player.Instance.TriggerHaptics(IsDominantHand, 300);
                     }
                 }
             }
@@ -161,7 +138,12 @@ namespace BacklineVR.Interaction
 
         public void GrabHovered()
         {
-            AttachObject(hoveringInteractable);
+            if(hoveringInteractable == null)
+            {
+                return;
+            }
+            AttachObject(hoveringInteractable, hoveringInteractable.AttachmentFlags);
+            Player.Instance.TriggerHaptics(IsDominantHand, 500);
         }
 
         //-------------------------------------------------
@@ -186,7 +168,7 @@ namespace BacklineVR.Interaction
             //Detach from the other hand if requested
             if (attachedObject.HasAttachFlag(AttachmentFlags.DetachFromOtherHand))
             {
-                if (OtherHand != null)
+                if (OtherHand != null && OtherHand.currentAttachedObject == interactable.gameObject)
                     OtherHand.DetachObject();
             }
 
@@ -332,11 +314,11 @@ namespace BacklineVR.Interaction
             if (spewDebugText)
                 HandDebugLog("DetachObject " + _objectData);
 
-            GameObject prevTopObject = currentAttachedObject;
-
-
+            if(_objectData.interactable != null)
+                _objectData.interactable.Detach(this);
 
             Transform parentTransform = null;
+
             if (_objectData.isParentedToHand)
             {
                 if (restoreOriginalParent && (_objectData.originalParent != null))
@@ -344,9 +326,10 @@ namespace BacklineVR.Interaction
                     parentTransform = _objectData.originalParent.transform;
                 }
 
-                if (_objectData.attachedObject != null)
+                if (_objectData.attachedObject != null && !_objectData.interactable.IsDestroying)
                 {
                     _objectData.attachedObject.transform.parent = parentTransform;
+                    Util.ResetTransform(_objectData.attachedObject.transform);
                 }
             }
 
@@ -374,14 +357,9 @@ namespace BacklineVR.Interaction
                 if (_objectData.interactable.IsDestroying == false)
                     _objectData.attachedObject.SetActive(true);
 
-                _objectData.interactable.Detach(this);
             }
-
-            GameObject newTopObject = currentAttachedObject;
-
+            _objectData = default;
             hoverLocked = false;
-
-
         }
 
 
@@ -437,7 +415,13 @@ namespace BacklineVR.Interaction
                 if (_objectData.attachedObject == contacting.gameObject)
                     continue;
 
-                // Best candidate so far...
+                if (contacting.AttachmentCriteria == AttachmentCriteria.NonDominantOnly && IsDominantHand)
+                    continue;
+
+                if (contacting.AttachmentCriteria == AttachmentCriteria.DominantOnly && !IsDominantHand)
+                    continue;
+
+                    // Best candidate so far...
                 float distance = Vector3.Distance(contacting.transform.position, hoverPosition);
                 bool lowerPriority = false;
                 if (closestInteractable != null)

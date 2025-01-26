@@ -4,6 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace BacklineVR.Interaction
 {
+    // The flags used to determine how an object is attached to the hand.
+    [Flags]
+    public enum AttachmentFlags
+    {
+        SnapOnAttach = 1 << 0, // The object should snap to the position of the specified attachment point on the hand.
+        DetachFromOtherHand = 1 << 2, // This object will be detached from the other hand.
+        ParentToHand = 1 << 3, // The object will be parented to the hand.
+        VelocityMovement = 1 << 4, // The object will attempt to move to match the position and rotation of the hand.
+        TurnOnKinematic = 1 << 5, // The object will not respond to external physics.
+        TurnOffGravity = 1 << 6, // The object will not respond to external physics.
+    };
+    [Flags]
+    public enum AttachmentCriteria
+    {
+        None,
+        DominantOnly,
+        NonDominantOnly
+    }
     public class Interactable : MonoBehaviour
     {
         public Action OnGrab;
@@ -35,14 +53,20 @@ namespace BacklineVR.Interaction
 
         public bool IsDestroying { get; protected set; }
 
+        public AttachmentFlags AttachmentFlags;
+        public AttachmentCriteria AttachmentCriteria;
+
+
         public void Attach(Hand hand)
         {
             Owner = hand;
+            OnGrab?.Invoke();
         }
 
         public void Detach(Hand hand)
         {
             Owner = null;
+            OnRelease?.Invoke();
         }
 
         private void OnDestroy()

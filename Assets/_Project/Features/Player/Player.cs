@@ -46,8 +46,8 @@ namespace BacklineVR.Core
             _inputProvider = GlobalDirector.Get<InputProvider>();
             _combatManager = GlobalDirector.Get<CombatManager>();
             _combatManager.OnAllySpawned(this);
-            _leftHand.AttachObject(_longBow);
-            _rightHand.AttachObject(_quiver);
+            //_leftHand.AttachObject(_longBow);
+            //_rightHand.AttachObject(_quiver);
             _inputProvider.OnGripDown += OnGripDown;
             _inputProvider.OnGripUp += OnGripUp;
             _inputProvider.OnTriggerDown += OnTriggerDown;
@@ -63,18 +63,19 @@ namespace BacklineVR.Core
         {
             if(side == HandSide.Left)
             {
-                _longBow.OnGrab?.Invoke();
+                _leftHand.GrabHovered();
                 return;
             }
-            _quiver.OnGrab?.Invoke();
+            _rightHand.GrabHovered();
         }
         private void OnGripUp(HandSide side)
         {
             if (side == HandSide.Left)
             {
+                _leftHand.DetachObject(true);
                 return;
             }
-            _quiver.OnRelease?.Invoke();
+            _rightHand.DetachObject(true);
         }
         private void OnTriggerDown(HandSide side, float amount)
         {
@@ -82,7 +83,7 @@ namespace BacklineVR.Core
             {
                 return;
             }
-            _quiver.OnActivate?.Invoke();
+            //_quiver.OnActivate?.Invoke();
         }
         private void OnTriggerUp(HandSide side)
         {
@@ -90,7 +91,7 @@ namespace BacklineVR.Core
             {
                 return;
             }
-            _quiver.OnDeactivate?.Invoke();
+            //_quiver.OnDeactivate?.Invoke();
         }
         public void TakeDamage(float damageAmount)
         {

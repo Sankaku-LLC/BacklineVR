@@ -230,6 +230,7 @@ Transform:
   - {fileID: 498172}
   - {fileID: 453242}
   - {fileID: 4000011047323824}
+  - {fileID: 3191542986830898594}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11447524
@@ -244,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d85480da87762944399dab6c99985eef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bow: {fileID: 0}
   _forceArrow: {fileID: 173732, guid: 81fc1450441aca64e8cc1a0e14b1aa77, type: 3}
   nockDistance: 0.1
   lerpCompleteDistance: 0.08
@@ -292,6 +294,8 @@ MonoBehaviour:
   snapAttachEaseInCompleted: 0
   handFollowTransform: 1
   HoverPriority: 0
+  AttachmentFlags: 4
+  AttachmentCriteria: 1
 --- !u!1 &191840
 GameObject:
   m_ObjectHideFlags: 0
@@ -1517,3 +1521,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4000011946585528}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8256160074775289488
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3191542986830898594}
+  - component: {fileID: 3720050881065501867}
+  m_Layer: 6
+  m_Name: InteractionVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3191542986830898594
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256160074775289488}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 400276}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3720050881065501867
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256160074775289488}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.19
+  m_Center: {x: 0, y: 0, z: 0}
