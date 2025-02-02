@@ -1,3 +1,4 @@
+using BacklineVR.Casting;
 using BacklineVR.Characters;
 using BacklineVR.Interaction;
 using BacklineVR.Interaction.Bow;
@@ -15,17 +16,8 @@ namespace BacklineVR.Core
         public Transform Head;
         public Transform Origin;
 
-        [SerializeField]
-        private Interactable _longBow;
 
-        [SerializeField]
-        private Interactable _quiver;
 
-        [SerializeField]
-        private Hand _leftHand;
-
-        [SerializeField]
-        private Hand _rightHand;
         private bool _isKilled;
         private bool _isStaggered;
         public bool IsDestroyed() => _isKilled;
@@ -36,6 +28,11 @@ namespace BacklineVR.Core
         public virtual TargetType GetTargetType() => TargetType.Player;
 
         private InputProvider _inputProvider;
+
+        private readonly Dictionary<InputMode, InputListener> _inputListeners = new Dictionary<InputMode, InputListener>(8);
+
+        private InputListener _currentMode;
+
         private void Awake()
         {
             Instance = this;
@@ -46,52 +43,23 @@ namespace BacklineVR.Core
             _inputProvider = GlobalDirector.Get<InputProvider>();
             _combatManager = GlobalDirector.Get<CombatManager>();
             _combatManager.OnAllySpawned(this);
-            //_leftHand.AttachObject(_longBow);
-            //_rightHand.AttachObject(_quiver);
-            _inputProvider.OnGripDown += OnGripDown;
-            _inputProvider.OnGripUp += OnGripUp;
-            _inputProvider.OnTriggerDown += OnTriggerDown;
-            _inputProvider.OnTriggerUp += OnTriggerUp;
-        }
 
-        // Update is called once per frame
-        void Update()
-        {
+            var listeners = GetComponents<InputListener>();
+            foreach(var listener in listeners)
+                _inputListeners.Add(listener.GetInputMode(), listener);
 
+            SetInputMode(InputMode.Default);
         }
-        private void OnGripDown(HandSide side, float amount)
+    
+        public void SetInputMode(InputMode inputMode)
         {
-            if(side == HandSide.Left)
+            if(_currentMode != null)
             {
-                _leftHand.GrabHovered();
-                return;
+                _currentMode.Unsubscribe(_inputProvider);
             }
-            _rightHand.GrabHovered();
-        }
-        private void OnGripUp(HandSide side)
-        {
-            if (side == HandSide.Left)
-            {
-                _leftHand.DetachObject(true);
-                return;
-            }
-            _rightHand.DetachObject(true);
-        }
-        private void OnTriggerDown(HandSide side, float amount)
-        {
-            if (side == HandSide.Left)
-            {
-                return;
-            }
-            //_quiver.OnActivate?.Invoke();
-        }
-        private void OnTriggerUp(HandSide side)
-        {
-            if (side == HandSide.Left)
-            {
-                return;
-            }
-            //_quiver.OnDeactivate?.Invoke();
+            _currentMode = _inputListeners[inputMode];
+            _currentMode.Subscribe(_inputProvider);
+
         }
         public void TakeDamage(float damageAmount)
         {
@@ -102,14 +70,6 @@ namespace BacklineVR.Core
             //If use dominant and left handed, second case used since XOR
             var handSide = useDominant ^ IsLeftHanded ? HandSide.Right : HandSide.Left;
             _inputProvider.RequestHapticPulse(handSide, 1, seconds, 1.5f / seconds);
-        }
-        public Transform GetArrowNockTransform()
-        {
-            if (IsLeftHanded)
-            {
-                return _leftHand.ArrowNockTransform;
-            }
-            return _rightHand.ArrowNockTransform;
         }
     }
 }

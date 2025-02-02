@@ -22,12 +22,10 @@ namespace BacklineVR.Interaction
         DominantOnly,
         NonDominantOnly
     }
-    public class Interactable : MonoBehaviour
+    public class Holdable : MonoBehaviour
     {
         public Action OnGrab;
         public Action OnRelease;
-        public Action OnActivate;
-        public Action OnDeactivate;
         public Action OnHeldUpdate;
         public Action OnStartHover;
         public Action OnStopHover;

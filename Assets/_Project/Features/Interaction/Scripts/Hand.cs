@@ -38,7 +38,7 @@ namespace BacklineVR.Interaction
         public struct AttachedObjectData
         {
             public GameObject attachedObject;
-            public Interactable interactable;
+            public Holdable interactable;
             public Rigidbody attachedRigidbody;
             public CollisionDetectionMode collisionDetectionMode;
             public bool attachedRigidbodyWasKinematic;
@@ -64,7 +64,7 @@ namespace BacklineVR.Interaction
 
         public bool hoverLocked { get; private set; }
 
-        private Interactable _hoveringInteractable;
+        private Holdable _hoveringInteractable;
 
         private TextMesh debugText;
         private int _prevOverlappingColliders = 0;
@@ -96,7 +96,7 @@ namespace BacklineVR.Interaction
         //-------------------------------------------------
         // The Interactable object this Hand is currently hovering over
         //-------------------------------------------------
-        public Interactable hoveringInteractable
+        public Holdable hoveringInteractable
         {
             get { return _hoveringInteractable; }
             set
@@ -135,15 +135,15 @@ namespace BacklineVR.Interaction
                 return _objectData.attachedObject;
             }
         }
-
-        public void GrabHovered()
+        public Holdable GrabHovered()
         {
             if(hoveringInteractable == null)
             {
-                return;
+                return null;
             }
             AttachObject(hoveringInteractable, hoveringInteractable.AttachmentFlags);
             Player.Instance.TriggerHaptics(IsDominantHand, 500);
+            return _objectData.interactable;
         }
 
         //-------------------------------------------------
@@ -153,7 +153,7 @@ namespace BacklineVR.Interaction
         // flags - The flags to use for attaching the object
         // attachmentPoint - Name of the GameObject in the hierarchy of this Hand which should act as the attachment point for this GameObject
         //-------------------------------------------------
-        public void AttachObject(Interactable interactable, AttachmentFlags flags = DEFAULT_ATTACHMENT_FLAGS, Transform attachmentOffset = null)
+        public void AttachObject(Holdable interactable, AttachmentFlags flags = DEFAULT_ATTACHMENT_FLAGS, Transform attachmentOffset = null)
         {
             AttachedObjectData attachedObject = new AttachedObjectData();
             attachedObject.attachmentFlags = flags;
@@ -173,7 +173,7 @@ namespace BacklineVR.Interaction
             }
 
             attachedObject.attachedObject = interactable.gameObject;
-            attachedObject.interactable = interactable.GetComponent<Interactable>();
+            attachedObject.interactable = interactable.GetComponent<Holdable>();
             attachedObject.handAttachmentPointTransform = this.transform;
 
                 if (attachedObject.interactable.attachEaseIn)
@@ -370,7 +370,7 @@ namespace BacklineVR.Interaction
                 return;
 
             float closestDistance = float.MaxValue;
-            Interactable closestInteractable = null;
+            Holdable closestInteractable = null;
 
             float scaledHoverRadius = hoverSphereRadius * Mathf.Abs(hoverSphereTransform.lossyScale.x);
             CheckHoveringForTransform(hoverSphereTransform.position, scaledHoverRadius, ref closestDistance, ref closestInteractable, Color.green);
@@ -379,7 +379,7 @@ namespace BacklineVR.Interaction
             hoveringInteractable = closestInteractable;
         }
 
-        protected virtual bool CheckHoveringForTransform(Vector3 hoverPosition, float hoverRadius, ref float closestDistance, ref Interactable closestInteractable, Color debugColor)
+        protected virtual bool CheckHoveringForTransform(Vector3 hoverPosition, float hoverRadius, ref float closestDistance, ref Holdable closestInteractable, Color debugColor)
         {
             bool foundCloser = false;
 
@@ -405,7 +405,7 @@ namespace BacklineVR.Interaction
                 if (collider == null)
                     continue;
 
-                var contacting = collider.GetComponentInParent<Interactable>();
+                var contacting = collider.GetComponentInParent<Holdable>();
 
                 // Yeah, it's null, skip
                 if (contacting == null)
@@ -699,7 +699,7 @@ namespace BacklineVR.Interaction
         //
         // interactable - The Interactable to hover over indefinitely.
         //-------------------------------------------------
-        public void HoverLock(Interactable interactable)
+        public void HoverLock(Holdable interactable)
         {
             if (spewDebugText)
                 HandDebugLog("HoverLock " + interactable);
@@ -713,7 +713,7 @@ namespace BacklineVR.Interaction
         //
         // interactable - The hover-locked Interactable to stop hovering over indefinitely.
         //-------------------------------------------------
-        public void HoverUnlock(Interactable interactable)
+        public void HoverUnlock(Holdable interactable)
         {
             if (spewDebugText)
                 HandDebugLog("HoverUnlock " + interactable);

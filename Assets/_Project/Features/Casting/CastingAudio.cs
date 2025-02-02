@@ -21,7 +21,7 @@ namespace BacklineVR.Casting
         private bool _playing = false;
         private void Awake()
         {
-            var input = GetComponent<VRInput>();
+            var input = GetComponent<GrabCaster>();
             input.OnStrokeStart += StartStrokeAudio;
             input.OnStrokeEnd += SilenceAudio;
             input.OnCast += PlayCast;

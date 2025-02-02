@@ -6,8 +6,8 @@ using Unity.XR.CoreUtils;
 
 namespace BacklineVR.Interaction.Bow
 {
-    [RequireComponent(typeof(Interactable))]
-    public class Quiver : MonoBehaviour
+    [RequireComponent(typeof(Holdable))]
+    public class Quiver : Item
 	{
         [SerializeField]
 		private Longbow _bow;
@@ -32,20 +32,17 @@ namespace BacklineVR.Interaction.Bow
 		private bool _nockReady = true;
         private Transform _arrowNockTransform;
 
-        private Interactable _interactable;
+        private Holdable _interactable;
 		//-------------------------------------------------
 		void Awake()
 		{
-            _interactable = GetComponent<Interactable>();
+            _interactable = GetComponent<Holdable>();
             _interactable.OnGrab += OnGrab;
             _interactable.OnRelease += OnRelease;
-            _interactable.OnActivate += OnActivate;
-            _interactable.OnDeactivate += OnDeactivate;
             _interactable.OnHeldUpdate += OnUpdate;
         }
         private void Start()
         {
-            _arrowNockTransform = Player.Instance.GetArrowNockTransform();
         }
 
 
@@ -56,7 +53,9 @@ namespace BacklineVR.Interaction.Bow
                 Debug.LogError("Arrow is present but grabbed was called again before release!");
                 return;
             }
-            //TODO: Disable grab casting
+            _arrowNockTransform = _interactable.Owner.ArrowNockTransform;//Quiver is always used by dominant hand
+
+            //TODO: This should disable grab casting on dominant hand
             currentArrow = Instantiate(_forceArrow, _arrowNockTransform.position, _arrowNockTransform.rotation);
             currentArrow.transform.parent = _arrowNockTransform;
             Util.ResetTransform(currentArrow.transform);
@@ -71,6 +70,7 @@ namespace BacklineVR.Interaction.Bow
             if (!nocked)
             {
                 DestroyArrow();
+                _arrowNockTransform = null;
                 return;
             }
 
@@ -85,15 +85,15 @@ namespace BacklineVR.Interaction.Bow
                 _bow.ReleaseNock();
                 DestroyArrow();
             }
-
+            _arrowNockTransform = null;
             _bow.StartRotationLerp(); // Arrow is releasing from the bow, tell the bow to lerp back to controller rotation
         }
 
-        public void OnActivate()
+        public override void Activate()
         {
         }
 
-        public void OnDeactivate()
+        public override void Deactivate()
         {
         }
 

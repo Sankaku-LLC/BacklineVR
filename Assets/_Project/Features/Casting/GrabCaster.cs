@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using BacklineVR.Core;
 using BacklineVR.Interaction;
 using CurseVR.Director;
 using CurseVR.SymbolSystem;
 using UnityEngine;
 namespace BacklineVR.Casting
 {
-    public enum MirrorSettings { None = 1, MirrorLeft = 2, MirrorRight = 3 }
     /// <summary>
     /// This class acts as the input method for all VR input for stroke inputs. Reserved for input related activity
     /// Note that a single static access point is used, rather than two. This is for easy handling of dual casting
     /// ASSUMPTION: This will be bound before localplayer binds it's grab methods
     /// This class has absolute priority in grabbing
     /// </summary>
-    public class VRInput : MonoBehaviour
+    public class GrabCaster : MonoBehaviour
     {
         [SerializeField]
         private protected Transform _casterTransform;
@@ -26,66 +26,49 @@ namespace BacklineVR.Casting
         private protected Vector3 _cursorPos;//Used to cache the current pos in case we spawn and need coords to spawn it at (moving after spawning will generate points)
         private protected StrokeCapture _activeCapture;
 
-        public static MirrorSettings ActiveMirrorSettings;
         public Action OnStrokeStart;
         public Action OnStrokeEnd;
         public Action OnCast;
         public Action<ClassificationResult> OnSymbolCast;
 
-        [SerializeField]
-        private HandSide _handSide = HandSide.Right;
-
         private SymbolApplication _symbolApp;
-
-        public static VRInput Caster;
 
         private List<string> _spellNames = new List<string> { "Fire", "Light", "Heal" };
         private protected virtual void Awake()
         {
             _strokeData = new List<StrokeCapture>();
-            Caster = this;
         }
         public void Start()
         {
             _symbolApp = GlobalDirector.Get<SymbolApplication>();
-            var inputProvider = GlobalDirector.Get<InputProvider>();
-            inputProvider.OnPrimaryButtonDown += OnProcess;
-            inputProvider.OnTriggerDown += OnTriggerDown;
-            inputProvider.OnTriggerUp += OnTriggerUp;
-            inputProvider.OnUpdatePosition += OnUpdatePosition;
+            //inputProvider.OnUpdatePosition += OnUpdatePosition;
         }
-        private void OnUpdatePosition(HandSide hand, Vector3 position)
+        private void UpdatePosition(HandSide hand, Vector3 position)
         {
-            if (hand != _handSide)
-                return;
             _cursorPos = position;
         }
-        private void OnTriggerDown(HandSide hand, float value)
+        public void StartCasting()
         {
-            if (hand == _handSide && !_drawing)
+            if (!_drawing)
             {
                 BeginStroke();
             }
         }
-        private void OnTriggerUp(HandSide hand)
+        public void StopCasting()
         {
-            if (hand == _handSide)
-            {
                 TryEndStroke();
-            }
         }
-        private void OnProcess(HandSide hand)
+        public SymbolData CastSymbol()
         {
-            if (hand == _handSide)
-            {
                 var successfulCast = TryCastSymbol(out var cast);
                 if (!successfulCast)
                 {
                     var defaultResult = new ClassificationResult();
                     defaultResult.MatchName = "Default";
                     OnSymbolCast?.Invoke(defaultResult);
-                    return;
+                    return null;
                 }
+            return cast;
                 //_symbolApp.Save(SymbolPool.Curse, _spellNames[0], cast);
                 //_spellNames.RemoveAt(0);
                 var successfulClassification =  _symbolApp.TryClassify(SymbolPool.Curse, cast, out var result);
@@ -94,10 +77,9 @@ namespace BacklineVR.Casting
                 OnSymbolCast?.Invoke(result);
                 if (!successfulClassification)
                 {
-                    return;
+                //    return;
                 }
                 ClearSingleStrokeData();
-            }
         }
         /// <summary>
         /// Registers a spell, clears out past spell glyph components
@@ -166,17 +148,6 @@ namespace BacklineVR.Casting
         }
         private SymbolData GetSingle()
         {
-            if (_handSide == HandSide.Left && ActiveMirrorSettings == MirrorSettings.MirrorLeft || _handSide == HandSide.Right && ActiveMirrorSettings == MirrorSettings.MirrorRight)
-            {
-                var mirroredList = new List<StrokeCapture>(_strokeData.Count);
-                for (var i = 0; i < _strokeData.Count; i++)
-                {
-                    var clonedCapture = new StrokeCapture(_strokeData[i]);
-                    clonedCapture.Stroke = MirrorStrokeHorizontally(_strokeData[i].Stroke);
-                    mirroredList.Add(clonedCapture);
-                }
-                return SymbolProcessor.ProcessStrokes(mirroredList, 3);
-            }
             return SymbolProcessor.ProcessStrokes(_strokeData, 3);
         }
 
@@ -201,17 +172,6 @@ namespace BacklineVR.Casting
                 strokeList.RemoveAt(0);
                 yield return new WaitForSeconds(nextDelay);
             }
-        }
-        private Stroke MirrorStrokeHorizontally(Stroke source)
-        {
-            var flipped = new Stroke();
-            Vector startPoint = source[0];
-            flipped.Add(startPoint);
-            for (int i = 1; i < source.Count; i++)
-            {
-                flipped.Add(new Vector(flipped[i - 1].x - (source[i].x - source[i - 1].x), source[i].y, source[i].z));//Add the flipped displacement to the previous point stored
-            }
-            return flipped;
         }
     }
 }

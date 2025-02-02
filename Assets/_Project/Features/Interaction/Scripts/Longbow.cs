@@ -12,8 +12,8 @@ using BacklineVR.Core;
 namespace BacklineVR.Interaction.Bow
 {
     //-------------------------------------------------------------------------
-    [RequireComponent(typeof(Interactable))]
-    public class Longbow : MonoBehaviour
+    [RequireComponent(typeof(Holdable))]
+    public class Longbow : Item
     {
         public Transform pivotTransform;
         public Transform handleTransform;
@@ -74,22 +74,19 @@ namespace BacklineVR.Interaction.Bow
         private GameObject _visuals;
         private Transform _arrowNockTransform;
 
-        private Interactable _interactable;
+        private Holdable _interactable;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _animator.speed = 0;
 
-            _interactable = GetComponent<Interactable>();
+            _interactable = GetComponent<Holdable>();
             _interactable.OnGrab += OnGrab;
             _interactable.OnRelease += OnRelease;
-            _interactable.OnActivate += OnActivate;
-            _interactable.OnDeactivate += OnDeactivate;
             _interactable.OnHeldUpdate += OnUpdate;
         }
         private void Start()
         {
-            _arrowNockTransform = Player.Instance.GetArrowNockTransform();
         }
         private void Update()
         {
@@ -120,19 +117,21 @@ namespace BacklineVR.Interaction.Bow
             else
                 pivotTransform.localScale = new Vector3(1f, 1f, 1f);
 
+            _arrowNockTransform = _interactable.Owner.OtherHand.ArrowNockTransform;//Equipment is always on non-dominant
         }
 
         public void OnRelease()
         {
             _visuals.SetActive(false);
             _isGrabbed = false;
+            _arrowNockTransform = null;
         }
 
-        public void OnActivate()
+        public override void Activate()
         {
         }
 
-        public void OnDeactivate()
+        public override void Deactivate()
         {
         }
         public void OnUpdate()
