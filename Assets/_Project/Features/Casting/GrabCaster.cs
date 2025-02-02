@@ -17,69 +17,38 @@ namespace BacklineVR.Casting
     public class GrabCaster : MonoBehaviour
     {
         [SerializeField]
-        private protected Transform _casterTransform;
+        private Transform _casterTransform;
         [SerializeField]
-        private protected GameObject _strokePrefab;//StrokePrefab is a gameobject with a particle system that spawns over space to create a trail
-        private protected List<StrokeCapture> _strokeData;
+        private GameObject _strokePrefab;//StrokePrefab is a gameobject with a particle system that spawns over space to create a trail
+        private List<StrokeCapture> _strokeData;
 
-        private protected bool _drawing = false;//Used to keep track if we're currently casting, so that we can terminate running strokes as needed
-        private protected Vector3 _cursorPos;//Used to cache the current pos in case we spawn and need coords to spawn it at (moving after spawning will generate points)
-        private protected StrokeCapture _activeCapture;
+        private bool _drawing = false;//Used to keep track if we're currently casting, so that we can terminate running strokes as needed
+        private Vector3 _cursorPos;//Used to cache the current pos in case we spawn and need coords to spawn it at (moving after spawning will generate points)
+        private StrokeCapture _activeCapture;
 
         public Action OnStrokeStart;
         public Action OnStrokeEnd;
         public Action OnCast;
-        public Action<ClassificationResult> OnSymbolCast;
 
-        private SymbolApplication _symbolApp;
-
-        private List<string> _spellNames = new List<string> { "Fire", "Light", "Heal" };
         private protected virtual void Awake()
         {
             _strokeData = new List<StrokeCapture>();
         }
         public void Start()
         {
-            _symbolApp = GlobalDirector.Get<SymbolApplication>();
-            //inputProvider.OnUpdatePosition += OnUpdatePosition;
         }
         private void UpdatePosition(HandSide hand, Vector3 position)
         {
             _cursorPos = position;
         }
-        public void StartCasting()
+        public void StartStroke()
         {
-            if (!_drawing)
-            {
-                BeginStroke();
-            }
-        }
-        public void StopCasting()
-        {
-                TryEndStroke();
-        }
-        public SymbolData CastSymbol()
-        {
-                var successfulCast = TryCastSymbol(out var cast);
-                if (!successfulCast)
-                {
-                    var defaultResult = new ClassificationResult();
-                    defaultResult.MatchName = "Default";
-                    OnSymbolCast?.Invoke(defaultResult);
-                    return null;
-                }
-            return cast;
-                //_symbolApp.Save(SymbolPool.Curse, _spellNames[0], cast);
-                //_spellNames.RemoveAt(0);
-                var successfulClassification =  _symbolApp.TryClassify(SymbolPool.Curse, cast, out var result);
-                if (!successfulClassification)
-                    result.MatchName = "Default";
-                OnSymbolCast?.Invoke(result);
-                if (!successfulClassification)
-                {
-                //    return;
-                }
-                ClearSingleStrokeData();
+            if (_drawing)
+                return;
+            _drawing = true;
+            var cursor = Instantiate(_strokePrefab, _cursorPos, Quaternion.identity).GetComponent<IStrokeProvider>();
+            _activeCapture = new StrokeCapture(Time.time, cursor);
+            OnStrokeStart?.Invoke();
         }
         /// <summary>
         /// Registers a spell, clears out past spell glyph components
@@ -91,15 +60,16 @@ namespace BacklineVR.Casting
             //if clicked Trigger before Grip, immediately stop 
             if (_drawing)
                 TryEndStroke();
-
             if (_strokeData.Count > 0)
             {
                 var processedSingle = GetSingle();
                 data = processedSingle;
                 OnCast?.Invoke();
+                ClearSingleStrokeData();
                 return true;
             }
             data = null;
+            ClearSingleStrokeData();
             return false;
         }
         public void ClearSingleStrokeData()
@@ -114,16 +84,6 @@ namespace BacklineVR.Casting
                 _activeCapture.StrokeProvider.SetPosition(_cursorPos);
         }
 
-        /// <summary>
-        /// Adds a new stroke
-        /// </summary>
-        public void BeginStroke()
-        {
-            _drawing = true;
-            var cursor = Instantiate(_strokePrefab, _cursorPos, Quaternion.identity).GetComponent<IStrokeProvider>();
-            _activeCapture = new StrokeCapture(Time.time, cursor);
-            OnStrokeStart?.Invoke();
-        }
 
         /// <summary>
         /// Ends the previous stroke. If the stroke is too short, then delete it

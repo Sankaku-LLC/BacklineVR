@@ -1,7 +1,6 @@
 using BacklineVR.Casting;
 using BacklineVR.Characters;
 using BacklineVR.Interaction;
-using BacklineVR.Interaction.Bow;
 using CurseVR.Director;
 using System.Collections;
 using System.Collections.Generic;

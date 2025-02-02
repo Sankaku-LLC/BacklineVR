@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace BacklineVR.Core
+namespace BacklineVR.Items
 {
     public abstract class Item : MonoBehaviour
     {

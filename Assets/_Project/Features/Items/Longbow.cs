@@ -8,8 +8,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using BacklineVR.Core;
+using BacklineVR.Interaction;
 
-namespace BacklineVR.Interaction.Bow
+namespace BacklineVR.Items
 {
     //-------------------------------------------------------------------------
     [RequireComponent(typeof(Holdable))]

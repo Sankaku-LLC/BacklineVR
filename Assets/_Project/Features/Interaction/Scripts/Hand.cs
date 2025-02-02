@@ -145,6 +145,11 @@ namespace BacklineVR.Interaction
             Player.Instance.TriggerHaptics(IsDominantHand, 500);
             return _objectData.interactable;
         }
+        public void HoldItem(Holdable holdable)
+        {
+            AttachObject(holdable, holdable.AttachmentFlags);
+            Player.Instance.TriggerHaptics(IsDominantHand, 500);
+        }
 
         //-------------------------------------------------
         // Attach a GameObject to this GameObject
