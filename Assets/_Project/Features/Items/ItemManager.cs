@@ -1,3 +1,4 @@
+using BacklineVR.Core;
 using CurseVR.Director;
 using CurseVR.SymbolSystem;
 using System;
@@ -12,50 +13,54 @@ namespace BacklineVR.Items
     /// </summary>
     public class ItemManager : MonoBehaviour, IGlobalComponent
     {
-        private readonly Dictionary<string, Item> _inventory = new Dictionary<string, Item>();
+        
 
+        //Temporary method of storing list of all items templates that can be spawned
         [SerializeField]
-        private List<Item> _items;
+        private List<GameObject> _itemCatalog;
 
+        //Temporary method of storing what items the player had at start
         [SerializeField]
-        private List<string> _throwableItems;
+        private List<ItemFrequencyPair<string>> _throwableItems;
         [SerializeField]
-        private List<string> _magicItems;
+        private List<ItemFrequencyPair<string>> _magicItems;
+
+        //List of player item codes and their frequency, populated at runtime
+        private readonly Dictionary<string, int> _inventory = new Dictionary<string, int>(32);
+        //List of spawnable items, generated at start for spawning
+        private readonly Dictionary<string, GameObject> _itemTemplates = new Dictionary<string, GameObject>(32);
 
         public Type GetManagerType() => typeof(ItemManager);
 
         public void OnInitialize()
         {
+            foreach(var item in _itemCatalog)
+            {
+                _itemTemplates.Add(item.GetComponent<Item>().GetCode(), item);
+            }
         }
 
         public void OnStart()
         {
             foreach(var item in _throwableItems)
             {
-                SpawnItem(false, item);
+                _inventory.Add(item.Item, item.Frequency);
             }
             foreach(var item in _magicItems)
             {
-                SpawnItem(false, item);
+                _inventory.Add(item.Item, item.Frequency);
             }
         }
-        public Item SpawnItem(bool shouldHide, string itemCode)
+        public bool TryGetItem(string itemCode, out Item item)
         {
-            var itemTemplate = _items.First(x => x.GetCode() == itemCode);
-            if(itemTemplate == null)
-                return null;
-            var spawnedItem = Instantiate(itemTemplate);
-            spawnedItem.enabled = shouldHide;
-            return spawnedItem;
-        }
-        public bool TryGetItem(SymbolData symbolData, bool isDominant, out Item item)
-        {
-            if (isDominant)
+            if (!_inventory.ContainsKey(itemCode))
             {
-             //   foreach(var inventoryItem in _inventory)
+                Debug.LogError("Item " + itemCode + " is not in inventory!");
+                item = null;
+                return false;
             }
-            item = null;
-            return false;
+            item = Instantiate(_itemTemplates[itemCode]).GetComponent<Item>();
+            return true;
         }
     }
 }

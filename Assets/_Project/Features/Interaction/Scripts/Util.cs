@@ -732,4 +732,15 @@ namespace BacklineVR.Core
 			}
 		}
 	}
+    [Serializable]
+    public class ItemFrequencyPair<T>
+    {
+        public T Item;
+        public int Frequency;
+        public ItemFrequencyPair(T item, int frequency)
+        {
+            Item = item;
+            Frequency = frequency;
+        }
+    }
 }

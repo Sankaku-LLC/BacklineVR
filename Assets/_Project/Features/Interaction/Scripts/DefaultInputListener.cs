@@ -15,6 +15,7 @@ namespace BacklineVR.Interaction
         private readonly Dictionary<HandSide, GrabCaster> _grabCasters = new Dictionary<HandSide, GrabCaster>(2);
 
         private SymbolApplication _symbolApp;
+        private ItemManager _itemManager;
         private HandSide Dominant;
         private HandSide NonDominant;
 
@@ -28,7 +29,7 @@ namespace BacklineVR.Interaction
         private protected override void Initialize()
         {
             _symbolApp = GlobalDirector.Get<SymbolApplication>();
-
+            _itemManager = GlobalDirector.Get<ItemManager>();
             _hands[HandSide.Left] = _leftHand;
             _hands[HandSide.Right] = _rightHand;
             _grabCasters[HandSide.Left] = _leftHand.GetComponent<GrabCaster>();
@@ -68,7 +69,7 @@ namespace BacklineVR.Interaction
             var successfulCast = _grabCasters[side].TryCastSymbol(out var symbolData);
             if (successfulCast)
             {
-                var didSpawn = TrySpawnItem(symbolData, out var spawnedItem);
+                var didSpawn = TrySpawnItem(side, symbolData, out var spawnedItem);
                 if (didSpawn)
                 {
                     _possessions[side] = spawnedItem;
@@ -82,18 +83,27 @@ namespace BacklineVR.Interaction
             if (holdable == null)
                 return;
             _possessions[side] = holdable;
+
+            //Else open the grab menu, and on selection give them the item.
         }
-        private bool TrySpawnItem(SymbolData symbolData, out Item item)
+        private bool TrySpawnItem(HandSide side, SymbolData symbolData, out Item item)
         {
             //_symbolApp.Save(SymbolPool.Curse, _spellNames[0], cast);
             //_spellNames.RemoveAt(0);
-            var successfulClassification = _symbolApp.TryClassify(SymbolPool.Curse, symbolData, out var result);
+            item = null;
+
+            var pool = side == Dominant ? SymbolPool.ThrowableItem : SymbolPool.MagicItem;
+            var successfulClassification = _symbolApp.TryClassify(pool, symbolData, out var result);
             if (!successfulClassification)
             {
-                //    return;
+                return false;
             }
-            item = null;
-            return false;
+            var gotItem = _itemManager.TryGetItem(symbolData.Name, out item);
+            if (!gotItem)
+            {
+                return false;
+            }
+            return true;
         }
         private protected override void OnGripUp(HandSide side)
         {

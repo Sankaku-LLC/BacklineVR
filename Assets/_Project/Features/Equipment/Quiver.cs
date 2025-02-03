@@ -7,7 +7,7 @@ using BacklineVR.Interaction;
 namespace BacklineVR.Items
 {
     [RequireComponent(typeof(Holdable))]
-    public class Quiver : Item
+    public class Quiver : MonoBehaviour
 	{
         [SerializeField]
 		private Longbow _bow;
@@ -87,14 +87,6 @@ namespace BacklineVR.Items
             }
             _arrowNockTransform = null;
             _bow.StartRotationLerp(); // Arrow is releasing from the bow, tell the bow to lerp back to controller rotation
-        }
-
-        public override void Activate()
-        {
-        }
-
-        public override void Deactivate()
-        {
         }
 
         public void OnUpdate()

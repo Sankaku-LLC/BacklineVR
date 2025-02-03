@@ -6,7 +6,7 @@ using CurseVR.SymbolSystem;
 using UnityEngine;
 namespace BacklineVR.Casting
 {
-    public enum SymbolPool { None = -1, Control = 0, Curse = 1 }
+    public enum SymbolPool { None = -1, ThrowableItem = 0, MagicItem = 1 }
     /// <summary>
     /// Is the top, user level layer for symbol manipulations
     /// </summary>
@@ -17,7 +17,7 @@ namespace BacklineVR.Casting
         /// </summary>
         const string SYMBOLSYSTEM_VER = "0.0.0";
         private readonly bool[] _directoryIsReadOnly = new bool[] { true, false };
-        private readonly string[] _rootDirectory = new string[] { "Controls", "Curses" };
+        private readonly string[] _rootDirectory = new string[] { "ThrowableItems", "MagicItems" };
 
         private SymbolManager _symbolManager;
 
@@ -30,13 +30,13 @@ namespace BacklineVR.Casting
             _symbolManager = new SymbolManager(_rootDirectory, _directoryIsReadOnly);
 
             //Load control symbols
-            _symbolManager.LoadDefaultSymbols((int)SymbolPool.Control, _rootDirectory[(int)SymbolPool.Control]);
+            _symbolManager.LoadDefaultSymbols((int)SymbolPool.ThrowableItem, _rootDirectory[(int)SymbolPool.ThrowableItem]);
 
             //This will copy symbols from streamingAssets (developer-generated, read-only) to persistentDatapath (user symbol space)
             //This runs if the spell system version was updated and the old spells need to be replaced on builds
             //if (PlayerPrefs.GetString("SYMBOLSYSTEM_VER") != SYMBOLSYSTEM_VER)
             {
-                _symbolManager.LoadDefaultSymbols((int)SymbolPool.Curse, _rootDirectory[(int)SymbolPool.Curse]);
+                _symbolManager.LoadDefaultSymbols((int)SymbolPool.MagicItem, _rootDirectory[(int)SymbolPool.MagicItem]);
                 PlayerPrefs.SetString("SYMBOLSYSTEM_VER", SYMBOLSYSTEM_VER);
             }
 

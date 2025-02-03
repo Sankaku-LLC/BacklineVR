@@ -14,7 +14,7 @@ namespace BacklineVR.Items
 {
     //-------------------------------------------------------------------------
     [RequireComponent(typeof(Holdable))]
-    public class Longbow : Item
+    public class Longbow : MonoBehaviour
     {
         public Transform pivotTransform;
         public Transform handleTransform;
@@ -126,14 +126,6 @@ namespace BacklineVR.Items
             _visuals.SetActive(false);
             _isGrabbed = false;
             _arrowNockTransform = null;
-        }
-
-        public override void Activate()
-        {
-        }
-
-        public override void Deactivate()
-        {
         }
         public void OnUpdate()
         {
