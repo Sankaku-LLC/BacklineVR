@@ -11,7 +11,7 @@ namespace BacklineVR.Interaction
     public class DefaultInputListener : InputListener
     {
         private readonly Dictionary<HandSide, Hand> _hands = new Dictionary<HandSide, Hand>(2);
-        private readonly Dictionary<HandSide, Item> _possessions = new Dictionary<HandSide, Item>(2);
+        private readonly Dictionary<HandSide, Holdable> _possessions = new Dictionary<HandSide, Holdable>(2);
         private readonly Dictionary<HandSide, GrabCaster> _grabCasters = new Dictionary<HandSide, GrabCaster>(2);
 
         private SymbolApplication _symbolApp;
@@ -72,7 +72,7 @@ namespace BacklineVR.Interaction
                 if (didSpawn)
                 {
                     _possessions[side] = spawnedItem;
-                    _hands[side].HoldItem(spawnedItem.GetComponent<Holdable>());
+                    _hands[side].HoldItem(spawnedItem);
                     return;
                 }
             }
@@ -81,7 +81,7 @@ namespace BacklineVR.Interaction
             var holdable = _hands[side].GrabHovered();
             if (holdable == null)
                 return;
-            _possessions[side] = holdable.GetComponent<Item>();
+            _possessions[side] = holdable;
         }
         private bool TrySpawnItem(SymbolData symbolData, out Item item)
         {
@@ -102,9 +102,9 @@ namespace BacklineVR.Interaction
         }
         private protected override void OnTriggerDown(HandSide side, float amount)
         {
-            if (_possessions[side] != null)
+            if (_possessions[side] is Item item)
             {
-                _possessions[side].Activate();
+                item.Activate();
                 return;
             }
 
@@ -113,9 +113,9 @@ namespace BacklineVR.Interaction
         }
         private protected override void OnTriggerUp(HandSide side)
         {
-            if (_possessions[side] != null)
+            if (_possessions[side] is Item item)
             {
-                _possessions[side].Deactivate();
+                item.Deactivate();
                 return;
             }
             var wasSuccessful = _grabCasters[side].TryEndStroke();//Use this to trigger preview
