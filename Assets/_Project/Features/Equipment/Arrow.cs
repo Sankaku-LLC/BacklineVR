@@ -9,7 +9,7 @@ using System.Collections;
 using BacklineVR.Core;
 using BacklineVR.Characters;
 
-namespace BacklineVR.Items
+namespace BacklineVR.Equipment
 {
     //-------------------------------------------------------------------------
     public class Arrow : MonoBehaviour

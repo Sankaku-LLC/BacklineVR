@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using BacklineVR.Core;
 using BacklineVR.Interaction;
 
-namespace BacklineVR.Items
+namespace BacklineVR.Equipment
 {
     //-------------------------------------------------------------------------
     [RequireComponent(typeof(Holdable))]

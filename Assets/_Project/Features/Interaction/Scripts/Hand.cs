@@ -8,6 +8,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using BacklineVR.Core;
+using BacklineVR.Items;
 
 namespace BacklineVR.Interaction
 {
@@ -302,6 +303,7 @@ namespace BacklineVR.Interaction
             if (spewDebugText)
                 HandDebugLog("AttachObject " + interactable);
 
+            hoverLocked = true;
         }
 
         public void ForceHoverUnlock()
@@ -319,8 +321,6 @@ namespace BacklineVR.Interaction
             if (spewDebugText)
                 HandDebugLog("DetachObject " + _objectData);
 
-            if(_objectData.interactable != null)
-                _objectData.interactable.Detach(this);
 
             Transform parentTransform = null;
 
@@ -334,7 +334,8 @@ namespace BacklineVR.Interaction
                 if (_objectData.attachedObject != null && !_objectData.interactable.IsDestroying)
                 {
                     _objectData.attachedObject.transform.parent = parentTransform;
-                    Util.ResetTransform(_objectData.attachedObject.transform);
+                    if(parentTransform != null)//Only reset position if we're reparenting
+                        Util.ResetTransform(_objectData.attachedObject.transform);
                 }
             }
 
@@ -356,13 +357,16 @@ namespace BacklineVR.Interaction
                 }
             }
 
-
             if (_objectData.attachedObject != null)
             {
                 if (_objectData.interactable.IsDestroying == false)
                     _objectData.attachedObject.SetActive(true);
 
             }
+
+            if (_objectData.interactable != null)
+                _objectData.interactable.Detach(this);
+
             _objectData = default;
             hoverLocked = false;
         }
@@ -425,6 +429,11 @@ namespace BacklineVR.Interaction
 
                 if (contacting.AttachmentCriteria == AttachmentCriteria.DominantOnly && !IsDominantHand)
                     continue;
+
+                if(contacting is ThrowableItem throwable && !throwable.CanCatch)
+                {
+                    continue;
+                }
 
                     // Best candidate so far...
                 float distance = Vector3.Distance(contacting.transform.position, hoverPosition);

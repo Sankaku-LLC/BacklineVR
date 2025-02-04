@@ -34,6 +34,8 @@ namespace BacklineVR.Interaction
             _hands[HandSide.Right] = _rightHand;
             _grabCasters[HandSide.Left] = _leftHand.GetComponent<GrabCaster>();
             _grabCasters[HandSide.Right] = _rightHand.GetComponent<GrabCaster>();
+            _possessions[HandSide.Left] = null;
+            _possessions[HandSide.Right] = null;
         }
         private protected override void Setup()
         {
@@ -92,6 +94,12 @@ namespace BacklineVR.Interaction
             //_spellNames.RemoveAt(0);
             item = null;
 
+            var foundIt = _itemManager.TryGetItem("ThrowableItemDummy", out item);
+            if (!foundIt)
+                return false;
+            else
+                return true;
+
             var pool = side == Dominant ? SymbolPool.ThrowableItem : SymbolPool.MagicItem;
             var successfulClassification = _symbolApp.TryClassify(pool, symbolData, out var result);
             if (!successfulClassification)
@@ -107,7 +115,9 @@ namespace BacklineVR.Interaction
         }
         private protected override void OnGripUp(HandSide side)
         {
-            _hands[side].DetachObject(true);//Later set it to false if we are throwing a throwable
+            if (_possessions[side] == null)
+                return;
+            _hands[side].DetachObject(_possessions[side].ShouldReparent);//Later set it to false if we are throwing a throwable
             _possessions[side] = null;
         }
         private protected override void OnTriggerDown(HandSide side, float amount)

@@ -296,6 +296,7 @@ MonoBehaviour:
   HoverPriority: 0
   AttachmentFlags: 4
   AttachmentCriteria: 1
+  ShouldReparent: 1
 --- !u!1 &191840
 GameObject:
   m_ObjectHideFlags: 0

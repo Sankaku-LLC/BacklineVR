@@ -1866,6 +1866,7 @@ MonoBehaviour:
   arrowSlideSound: {fileID: 11466562}
   releaseSound: {fileID: 11462188}
   nockSound: {fileID: 11498608}
+  _visuals: {fileID: 0}
 --- !u!95 &9545886
 Animator:
   serializedVersion: 5
@@ -1931,6 +1932,7 @@ MonoBehaviour:
   HoverPriority: 0
   AttachmentFlags: 109
   AttachmentCriteria: 2
+  ShouldReparent: 1
 --- !u!1 &173948
 GameObject:
   m_ObjectHideFlags: 0

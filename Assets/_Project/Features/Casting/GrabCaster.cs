@@ -37,7 +37,7 @@ namespace BacklineVR.Casting
         public void Start()
         {
         }
-        private void UpdatePosition(HandSide hand, Vector3 position)
+        private void UpdatePosition(Vector3 position)
         {
             _cursorPos = position;
         }
@@ -46,7 +46,7 @@ namespace BacklineVR.Casting
             if (_drawing)
                 return;
             _drawing = true;
-            var cursor = Instantiate(_strokePrefab, _cursorPos, Quaternion.identity).GetComponent<IStrokeProvider>();
+            var cursor = Instantiate(_strokePrefab, transform.position, Quaternion.identity).GetComponent<IStrokeProvider>();//used to use cursorPos
             _activeCapture = new StrokeCapture(Time.time, cursor);
             OnStrokeStart?.Invoke();
         }
@@ -81,7 +81,7 @@ namespace BacklineVR.Casting
         private void Update()
         {
             if (_activeCapture != null)
-                _activeCapture.StrokeProvider.SetPosition(_cursorPos);
+                _activeCapture.StrokeProvider.SetPosition(transform.position);//used to use cursor pos
         }
 
 
