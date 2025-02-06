@@ -23,6 +23,10 @@ namespace BacklineVR.Items
         {
             _throwable = GetComponent<Throwable>();
         }
+        public override bool ShouldReparent()
+        {
+            return !_throwable.FastEnough();
+        }
         public override void Activate()
         {
         }

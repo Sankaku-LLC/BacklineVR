@@ -1,3 +1,4 @@
+using BacklineVR.Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,11 +18,27 @@ namespace BacklineVR.Items
         private float usageCooldown;
         public override void Activate()
         {
+            print("Weapon armed!");
+            //Arm this item, tell inputListener to swap to magic input listener. Magic item is now armed
+            Player.Instance.SetInputMode(Interaction.InputMode.MagicCasting);
         }
         public override void Deactivate()
         {
+            print("Weapon disarmed!");
+            Player.Instance.SetInputMode(Interaction.InputMode.Default);
         }
-
+        public void StartSelection()
+        {
+            print("TEMP: Set Target!");
+        }
+        public void StopSelection()
+        {
+            print("TEMP: Stop Selection!");
+        }
+        public void Cast()
+        {
+            print("TEMP: Cast Magic!");
+        }
         public override string GetCode() => _magicItemCode;
     }
 }

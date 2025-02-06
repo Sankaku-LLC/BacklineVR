@@ -10,10 +10,14 @@ namespace BacklineVR.Interaction
     public abstract class InputListener : MonoBehaviour
     {
         private protected Player _player;
+        private protected HandSide Dominant;
+        private protected HandSide NonDominant;
         public abstract InputMode GetInputMode();
         private void Awake()
         {
             _player = GetComponent<Player>();
+            Dominant = _player.IsLeftHanded ? HandSide.Left : HandSide.Right;
+            NonDominant = _player.IsLeftHanded ? HandSide.Right : HandSide.Left;
             Initialize();
         }
         /// <summary>

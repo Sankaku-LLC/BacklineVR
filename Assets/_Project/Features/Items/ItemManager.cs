@@ -59,8 +59,25 @@ namespace BacklineVR.Items
                 item = null;
                 return false;
             }
+            if (_inventory[itemCode] == 0)
+            {
+                Debug.LogError("No more of item " + itemCode + " in inventory!");
+                item = null;
+                return false;
+            }
             item = Instantiate(_itemTemplates[itemCode]).GetComponent<Item>();
+            _inventory[itemCode] -= 1;
             return true;
+        }
+        public void StoreItem(Item item, int count = 1)
+        {
+            var itemCode = item.GetCode();
+            if (!_inventory.ContainsKey(itemCode))
+            {
+                _inventory.Add(itemCode, 0);
+            }
+            _inventory[itemCode] += count;//TODO: Add a way to save/ load inventory contents
+            Destroy(item.gameObject);
         }
     }
 }

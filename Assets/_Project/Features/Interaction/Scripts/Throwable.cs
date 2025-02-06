@@ -10,6 +10,7 @@ namespace BacklineVR.Interaction
     [RequireComponent(typeof(Rigidbody))]
     public class Throwable : MonoBehaviour
     {
+        private const float NO_THROW_SPEED = 2;//If hand is at a speed below this, ignore
         [Tooltip("How fast must this object be moving to attach due to a trigger hold instead of a trigger press? (-1 to disable)")]
         public float catchingSpeedThreshold = -1;
 
@@ -45,7 +46,7 @@ namespace BacklineVR.Interaction
             rigidbody = GetComponent<Rigidbody>();
             rigidbody.maxAngularVelocity = 50.0f;
         }
-
+  
         public bool CanCatch()
         {
             if (attached || catchingSpeedThreshold == -1)
@@ -68,7 +69,10 @@ namespace BacklineVR.Interaction
 
             attachTime = Time.time;
         }
-
+        public bool FastEnough()
+        {
+            return velocityEstimator.GetVelocityEstimate().magnitude > NO_THROW_SPEED;
+        }
 
         //-------------------------------------------------
         protected virtual void OnRelease()

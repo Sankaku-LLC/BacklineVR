@@ -54,9 +54,6 @@ namespace BacklineVR.Interaction
         public AttachmentFlags AttachmentFlags;
         public AttachmentCriteria AttachmentCriteria;
 
-        public bool ShouldReparent;
-
-
         public void Attach(Hand hand)
         {
             Owner = hand;
@@ -88,6 +85,11 @@ namespace BacklineVR.Interaction
             {
                 Owner.ForceHoverUnlock();
             }
+        }
+
+        public virtual bool ShouldReparent()
+        {
+            return true;
         }
     }
 }
