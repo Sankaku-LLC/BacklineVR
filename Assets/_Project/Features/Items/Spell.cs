@@ -6,17 +6,21 @@ namespace BacklineVR.Items
 {
     public enum SpellAttribute { Fire }
     public enum CastingVariant { Point, Ray, Entity}
-    public class Spell : MonoBehaviour
+    public abstract class Spell : MonoBehaviour
     {
-        public void Activate(Vector3 position)
+        [SerializeField]
+        private protected GameObject _spellPrefab;
+        [SerializeField]
+        private protected SpellAttribute _attribute;
+        public virtual void Activate(Vector3 position)
         {
 
         }
-        public void Activate(List<ITargetable> targets)
+        public virtual void Activate(List<ITargetable> targets)
         {
 
         }
-        public void Activate(List<Ray> rays)
+        public virtual void Activate(List<Ray> rays)
         {
 
         }
