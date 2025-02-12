@@ -5,15 +5,18 @@ using UnityEngine;
 
 public class RayTargetingSystem : TargetingSystem
 {
-    private protected override void OnApplySelections(Spell spell)
+    private protected override void CastSpell()
     {
-        print("TEMP: Cast Magic!");
-        var rays = new List<Ray>(_targetingGlyphs.Count);
-        foreach(var glyph in _targetingGlyphs)
+        StartCoroutine(DelayedCastSpell());
+    }
+    private IEnumerator DelayedCastSpell()
+    {
+        foreach (var glyph in _targetingGlyphs)
         {
-            rays.Add(new Ray(glyph.transform.position, glyph.transform.forward));
+            var spell = Instantiate(_spellPrefab, glyph.transform.position, glyph.transform.rotation);
+            yield return new WaitForSeconds(.25f);
         }
-        //spell.Activate(rays);
+        Deactivate();
     }
 
     private protected override void OnStartSelect()

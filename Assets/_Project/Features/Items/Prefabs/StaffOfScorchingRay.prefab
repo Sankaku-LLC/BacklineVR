@@ -198,8 +198,7 @@ MonoBehaviour:
   AttachmentFlags: 13
   AttachmentCriteria: 2
   _magicItemCode: MagicItemDummy
-  _spell: {fileID: 0}
-  _targetCount: 0
+  _totalCharges: 1
 --- !u!114 &1101749795434934292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,8 +211,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083a19b144d949347b4e4a5a3323ab55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxTargets: 3
   _castingGlyph: {fileID: 4549597407010498883}
   _targetingGlyphTemplate: {fileID: 5724932218411872707}
+  _spellPrefab: {fileID: 2731966954934393226, guid: 3418ad69724996b489db2f75e6999f8c, type: 3}
 --- !u!1 &5724932218411872707
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,7 +470,6 @@ GameObject:
   - component: {fileID: 5884665104455021639}
   - component: {fileID: 6012527121233883407}
   - component: {fileID: 1918227890886535810}
-  - component: {fileID: 393174209093909024}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -542,26 +542,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &393174209093909024
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7203701622166631100}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}

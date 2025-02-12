@@ -6,23 +6,13 @@ namespace BacklineVR.Items
 {
     public enum SpellAttribute { Fire }
     public enum CastingVariant { Point, Ray, Entity}
+
+    /// <summary>
+    /// Spells begin their lifecycle after being spawned by a targeting system. From there they can do whatever they want - fly forwards, explode, apply StatusEffect scripts, etc
+    /// </summary>
     public abstract class Spell : MonoBehaviour
     {
         [SerializeField]
-        private protected GameObject _spellPrefab;
-        [SerializeField]
         private protected SpellAttribute _attribute;
-        public virtual void Activate(Vector3 position)
-        {
-
-        }
-        public virtual void Activate(List<ITargetable> targets)
-        {
-
-        }
-        public virtual void Activate(List<Ray> rays)
-        {
-
-        }
     }
 }
