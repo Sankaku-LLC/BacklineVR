@@ -2,7 +2,6 @@ using BacklineVR.Core;
 using BacklineVR.Items;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 /// <summary>
 /// These are used to apply spells onto targets when casting with a magic item
@@ -15,12 +14,15 @@ public abstract class TargetingSystem : MonoBehaviour
     private protected bool _selectActive;
 
     private protected int _targetIndex;
+    [SerializeField]
     private protected int _maxTargets;
     private protected Transform _castingHand;
     [SerializeField]
     private protected GameObject _castingGlyph;
     [SerializeField]
     private protected GameObject _targetingGlyphTemplate;
+    [SerializeField]
+    private protected GameObject _spellPrefab;
 
     private protected GameObject _activeTargetingGlyph;
     // Start is called before the first frame update
@@ -41,23 +43,25 @@ public abstract class TargetingSystem : MonoBehaviour
     {
 
     }
-    public void Activate(Transform castingHand, int targetCount)
+    public void Activate(Transform castingHand)
     {
-        print("Weapon armed!");
         _castingHand = castingHand;
         _targetIndex = -1;
-        _maxTargets = targetCount;
         var headTransform = Player.Instance.Head.transform;
         var castingPos = headTransform.position;
         castingPos.y = 0;
-        var castingRot = Quaternion.Euler(0, headTransform.eulerAngles.y, 0);
+        var castingRot = Quaternion.Euler(90, headTransform.eulerAngles.y, 0);
+        _castingGlyph.transform.parent = null;
         _castingGlyph.transform.SetPositionAndRotation(castingPos, castingRot);
         _castingGlyph.SetActive(true);
     }
     public void Deactivate()
     {
-        print("Weapon disarmed!");
         _castingGlyph.SetActive(false);
+        for (var i = _targetingGlyphs.Count - 1; i >= 0; i--)
+            Destroy(_targetingGlyphs[i]);
+        _targetingGlyphs.Clear();
+        _targetIndex = -1;
     }
     public void StartSelect()
     {
@@ -72,10 +76,10 @@ public abstract class TargetingSystem : MonoBehaviour
         OnStopSelect();
     }
     private protected abstract void OnStopSelect();
-    public void ApplySelections(Spell spell)
+    public void ApplySelections()
     {
         StopSelect();
-        OnApplySelections(spell);
+        CastSpell();
     }
     private protected virtual void Deselect()
     {
@@ -83,7 +87,7 @@ public abstract class TargetingSystem : MonoBehaviour
         _activeTargetingGlyph = null;
         _targetIndex = Mathf.Max(0, _targetIndex - 1);
     }
-    private protected abstract void OnApplySelections(Spell spell);
+    private protected abstract void CastSpell();
 
     private void FixedUpdate()
     {
@@ -95,11 +99,12 @@ public abstract class TargetingSystem : MonoBehaviour
     private protected GameObject GetGlyph()
     {
         //If we need to spawn another and have the capacity for it
-        if( _targetIndex < _targetingGlyphs.Count && _targetIndex < _maxTargets)
+        if(_targetingGlyphs.Count < _maxTargets && _targetIndex + 1 < _maxTargets)
         {
             var newGlyph = Instantiate(_targetingGlyphTemplate);
             _targetingGlyphs.Add(newGlyph);
             _targetIndex++;
+            newGlyph.SetActive(true);
             return newGlyph;
         }
         //If already spawned, use next

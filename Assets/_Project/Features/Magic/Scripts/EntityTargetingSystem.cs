@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EntityTargetingSystem : TargetingSystem
 {
-    private protected override void OnApplySelections(Spell spell)
+    private protected override void CastSpell()
     {
     }
 

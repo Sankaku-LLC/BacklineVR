@@ -14,25 +14,24 @@ namespace BacklineVR.Items
         [SerializeField]
         private string _magicItemCode;
         [SerializeField]
-        private Spell _spell;
-        [SerializeField]
-        private int _targetCount;
+        private int _totalCharges;
         private int _chargesRemaining;
         private float usageCooldown;
         private TargetingSystem _targetingSystem;
-
         private void Awake()
         {
             _targetingSystem = GetComponent<TargetingSystem>();
         }
         public override void Activate()
         {
+            print("Weapon armed!");
             //Arm this item, tell inputListener to swap to magic input listener. Magic item is now armed
             Player.Instance.SetInputMode(Interaction.InputMode.MagicCasting);
-            _targetingSystem.Activate(Owner.OtherHand.transform, _targetCount);
+            _targetingSystem.Activate(Owner.OtherHand.transform);
         }
         public override void Deactivate()
         {
+            print("Weapon disarmed!");
             Player.Instance.SetInputMode(Interaction.InputMode.Default);
             _targetingSystem.Deactivate();
         }
@@ -46,7 +45,7 @@ namespace BacklineVR.Items
         }
         public void Cast()
         {
-            _targetingSystem.ApplySelections(_spell);
+            _targetingSystem.ApplySelections();
         }
         public override string GetCode() => _magicItemCode;
     }
