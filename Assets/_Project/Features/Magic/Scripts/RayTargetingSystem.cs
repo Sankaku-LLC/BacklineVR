@@ -32,7 +32,8 @@ public class RayTargetingSystem : TargetingSystem
 
     private protected override void UpdateTargeting()
     {
-        _activeTargetingGlyph.transform.SetPositionAndRotation(_castingHand.position, _castingHand.rotation);
+        var angle = Quaternion.LookRotation(_castingHand.forward, Vector3.up);
+        _activeTargetingGlyph.transform.SetPositionAndRotation(_castingHand.position, angle);
         //do a raycast from the hand, with a line renderer laser to the selected target being emitted from the hand position
     }
     private protected override void Deselect()

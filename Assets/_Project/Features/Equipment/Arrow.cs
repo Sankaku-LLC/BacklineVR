@@ -16,9 +16,6 @@ namespace BacklineVR.Equipment
     {
         public ParticleSystem glintParticle;
 
-        [SerializeField]
-        private GameObject _strikePS;
-
         public Rigidbody arrowHeadRB;
         public Rigidbody shaftRB;
 
@@ -152,7 +149,6 @@ namespace BacklineVR.Equipment
                 // always pop balloons
                 if (rbSpeed > 0.1f || goThrough)
                 {
-                    _strikePS.SetActive(true);
                     var gobby = collision.gameObject.GetComponent<IDestructible>();
                     if (gobby == null)
                         return;
