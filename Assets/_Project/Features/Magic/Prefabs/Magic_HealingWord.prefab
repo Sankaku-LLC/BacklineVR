@@ -125,6 +125,14 @@ PrefabInstance:
       propertyPath: m_Pitch
       value: -1.67
       objectReference: {fileID: 0}
+    - target: {fileID: 7328349111987335006, guid: 311b23fe5fe19de4985fb864ef4dbb36, type: 3}
+      propertyPath: Spatialize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7328349111987335006, guid: 311b23fe5fe19de4985fb864ef4dbb36, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 243366450046692526, guid: ec12f7772c03e4c4c9e4c2f1643595ad, type: 2}
     - target: {fileID: 7470538819409583056, guid: 311b23fe5fe19de4985fb864ef4dbb36, type: 3}
       propertyPath: m_Enabled
       value: 1

@@ -1649,14 +1649,14 @@ AudioSource:
   m_GameObject: {fileID: 165384}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243078391499754788, guid: ec12f7772c03e4c4c9e4c2f1643595ad, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
-  Spatialize: 0
+  Spatialize: 1
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
@@ -1932,7 +1932,6 @@ MonoBehaviour:
   HoverPriority: 0
   AttachmentFlags: 109
   AttachmentCriteria: 2
-  ShouldReparent: 1
 --- !u!1 &173948
 GameObject:
   m_ObjectHideFlags: 0

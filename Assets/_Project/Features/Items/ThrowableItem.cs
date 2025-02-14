@@ -1,4 +1,5 @@
 using BacklineVR.Interaction;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace BacklineVR.Items
     /// They are destroyed after collision
     /// </summary>
     [RequireComponent(typeof(Throwable))]
-    public class ThrowableItem : Item
+    public abstract class ThrowableItem : Item
     {
         [SerializeField]
         private string _throwableItemCode;
@@ -18,22 +19,23 @@ namespace BacklineVR.Items
         private float _countDown;
         public bool CanCatch => _throwable.CanCatch();
         public override string GetCode() => _throwableItemCode;
-
-        private void Start()
+        private void Awake()
         {
             _throwable = GetComponent<Throwable>();
+            _throwable.OnThrowItem += OnItemThrown;
+        }
+        private void Start()
+        {
         }
         public override bool ShouldReparent()
         {
             return !_throwable.FastEnough();
         }
-        public override void Activate()
+        private protected abstract void OnItemThrown();
+        private void OnCollisionEnter(Collision collision)
         {
-        }
 
-        public override void Deactivate()
-        {
         }
- 
+        private protected abstract void OnCollision();
     }
 }

@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using System.Collections;
 using BacklineVR.Core;
+using System;
 
 namespace BacklineVR.Interaction
 {
@@ -32,6 +33,7 @@ namespace BacklineVR.Interaction
         [HideInInspector]
         public Holdable interactable;
 
+        public Action OnThrowItem;
 
         //-------------------------------------------------
         protected virtual void Awake()
@@ -85,6 +87,8 @@ namespace BacklineVR.Interaction
 
             rigidbody.velocity = velocity;
             rigidbody.angularVelocity = angularVelocity;
+            if (FastEnough())
+                OnThrowItem?.Invoke();
         }
 
 
