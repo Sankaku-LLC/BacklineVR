@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour, IGlobalComponent
 {
-    public readonly List<EnemyCharacter> AllSpawnedEnemies = new List<EnemyCharacter>(32);
+    public readonly List<ITargetable> AllSpawnedEnemies = new List<ITargetable>(32);
     public readonly List<ITargetable> AllSpawnedAllies = new List<ITargetable>(32);
     public void OnInitialize()
     {
@@ -21,14 +21,14 @@ public class CombatManager : MonoBehaviour, IGlobalComponent
     {
         return typeof(CombatManager);
     }
-    public void OnEnemySpawned(EnemyCharacter enemy)
+    public void OnEnemySpawned(ITargetable enemy)
     {
         AllSpawnedEnemies.Add(enemy);
     }
     public void OnAllySpawned(ITargetable ally) { 
         AllSpawnedAllies.Add(ally);
     }
-    public void OnEnemyKilled(EnemyCharacter enemy)
+    public void OnEnemyKilled(ITargetable enemy)
     {
         AllSpawnedEnemies.Remove(enemy);
     }
@@ -69,11 +69,11 @@ public class CombatManager : MonoBehaviour, IGlobalComponent
 
     public ITargetable GetClosestEnemyUnit(Vector3 curPosition)
     {
-        EnemyCharacter closestEnemy = null;
+        ITargetable closestEnemy = null;
         var closestDist = float.MaxValue;
         foreach(var enemy in AllSpawnedEnemies)
         {
-            var newDist = GetSquaredDistance(enemy.transform.position, curPosition);
+            var newDist = GetSquaredDistance(enemy.GetMainTransform().position, curPosition);
             if(IsLessThanAndNonZero(newDist, closestDist))
             {
                 closestDist = newDist;

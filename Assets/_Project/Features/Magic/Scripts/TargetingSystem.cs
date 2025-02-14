@@ -29,11 +29,11 @@ public abstract class TargetingSystem : MonoBehaviour
     private void Awake()
     {
         Initialize();
+        _selectActive = false;
         _targetingGlyphTemplate.SetActive(false);
     }
     private protected virtual void Initialize()
     {
-        _selectActive = false;
     }
     private void Start()
     {
@@ -66,7 +66,6 @@ public abstract class TargetingSystem : MonoBehaviour
     public void StartSelect()
     {
         _selectActive = true;
-        _activeTargetingGlyph = GetGlyph();
         OnStartSelect();
     }
     private protected abstract void OnStartSelect();

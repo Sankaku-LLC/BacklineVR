@@ -21,7 +21,8 @@ public class RayTargetingSystem : TargetingSystem
 
     private protected override void OnStartSelect()
     {
-            print("TEMP: Set Target!");
+        _activeTargetingGlyph = GetGlyph();
+
         //Allow grabbing a already placed glyph and setting active targeting glyph to that first?
     }
 
@@ -32,7 +33,7 @@ public class RayTargetingSystem : TargetingSystem
 
     private protected override void UpdateTargeting()
     {
-        var angle = Quaternion.LookRotation(_castingHand.forward, Vector3.up);
+        var angle = Quaternion.LookRotation(-_castingHand.up, Vector3.up);
         _activeTargetingGlyph.transform.SetPositionAndRotation(_castingHand.position, angle);
         //do a raycast from the hand, with a line renderer laser to the selected target being emitted from the hand position
     }

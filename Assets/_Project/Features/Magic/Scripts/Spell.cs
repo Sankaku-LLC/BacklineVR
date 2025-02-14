@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace BacklineVR.Items
 {
-    public enum SpellAttribute { Fire }
+    public enum SpellAttribute { Fire, Nature, Lightning, Thunder }
     public enum CastingVariant { Point, Ray, Entity}
 
     /// <summary>

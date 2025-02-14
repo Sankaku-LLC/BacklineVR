@@ -75,7 +75,7 @@ namespace BacklineVR.Interaction
         {
             //_symbolApp.Save(SymbolPool.Curse, _spellNames[0], cast);
             //_spellNames.RemoveAt(0);
-            itemCode = side == Dominant ? "ThrowableItemDummy" : "MagicItemDummy";
+            itemCode = side == Dominant ? "ThrowableItemDummy" : "StaffOfHealingWord";
             return true;
 
             var pool = side == Dominant ? SymbolPool.ThrowableItem : SymbolPool.MagicItem;

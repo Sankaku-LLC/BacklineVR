@@ -17,7 +17,7 @@ public class HealthBarUI : MonoBehaviour
     private Image frontHealthBar;
     [SerializeField]
     private Image backHealthBar;
-    [SerializeField]
+    [SerializeField,ColorUsage(true,true)]
     private Color _regularHitColor, _criticalHitColor;
     private bool _isCrit;
     private CanvasGroup _canvasGroup;
