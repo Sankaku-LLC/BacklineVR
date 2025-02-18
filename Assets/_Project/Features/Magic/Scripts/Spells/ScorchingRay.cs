@@ -2,7 +2,7 @@ using BacklineVR.Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace BacklineVR.Items.Magic
+namespace BacklineVR.Magic
 {
     /// <summary>
     /// Scorching ray will fly forwards upon spawning and enable the hit prefab upon collision

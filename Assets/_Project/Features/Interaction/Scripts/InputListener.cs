@@ -86,7 +86,7 @@ namespace BacklineVR.Interaction
         {
 
         }
-        private protected virtual void OnControlPad(Vector2 position)
+        private protected virtual void OnControlPad(HandSide hand, Vector2 position)
         {
 
         }

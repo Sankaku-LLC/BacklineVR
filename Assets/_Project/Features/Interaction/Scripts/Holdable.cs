@@ -30,7 +30,6 @@ namespace BacklineVR.Interaction
         public Action OnStartHover;
         public Action OnStopHover;
 
-        [Tooltip("Specify whether you want to snap to the hand's object attachment point, or just the raw hand")]
         public bool UseHandObjectAttachmentPoint = true;
 
         public bool attachEaseIn = false;
@@ -41,10 +40,8 @@ namespace BacklineVR.Interaction
         public bool snapAttachEaseInCompleted = false;
 
 
-        [Tooltip("Should the rendered hand lock on to and follow the object")]
         public bool handFollowTransform = true;
 
-        [Tooltip("Higher is better")]
         public int HoverPriority = 0;
 
         public Hand Owner { get; private set; }

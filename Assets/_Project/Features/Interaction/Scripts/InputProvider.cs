@@ -19,22 +19,18 @@ namespace BacklineVR.Interaction
             AngularVelocity,
             Trigger,
             Grip,
-            Move,
+            Thumbstick,
             Haptic,
             PrimaryButton
         }
         [SerializeField]
         private InputActionAsset _inputActions;
         [SerializeField]
-        private float _snapTurnAngle = 45;
-        [SerializeField]
         private Transform _leftHand;
         [SerializeField]
         private Transform _rightHand;
         private Dictionary<string, List<Action<CallbackContext>>> _bindings;
 
-        public Action<Vector3> OnTranslate;
-        public Action<Vector3> OnRotate;
         //Casting
         public Action<HandSide, Vector3> OnUpdatePosition;
         public Action<HandSide, Quaternion> OnUpdateRotation;
@@ -45,7 +41,7 @@ namespace BacklineVR.Interaction
         public Action<HandSide, float> OnGripDown;
         public Action<HandSide> OnGripUp;
         public Action<HandSide> OnPrimaryButtonDown;
-        public Action<Vector2> OnControlPad;
+        public Action<HandSide, Vector2> OnControlPad;
 
         private bool[] _isGripDown = new bool[2];
         private bool[] _isTriggerDown = new bool[2];
@@ -67,10 +63,6 @@ namespace BacklineVR.Interaction
         {
             SetupHandActions(HandSide.Left);
             SetupHandActions(HandSide.Right);
-            Action<CallbackContext> leftPadPerformed = OnLeftPadUpdated;
-            SetupBinding(Device.LeftHand, ActionCode.Move, OnLeftPadUpdated);
-            Action<CallbackContext> rightPadPerformed = OnRightPadUpdated;
-            SetupBinding(Device.RightHand, ActionCode.Move, OnRightPadUpdated);
         }
         private void SetupHandActions(HandSide hand)
         {
@@ -99,6 +91,8 @@ namespace BacklineVR.Interaction
             Action<CallbackContext> angularVelocityPerformed = (CallbackContext context) => OnAngularVelocityUpdated(hand, context);
             SetupBinding(deviceHand, ActionCode.AngularVelocity, angularVelocityPerformed);
 
+            Action<CallbackContext> rightPadPerformed = (CallbackContext context) => OnPadUpdated(hand, context);
+            SetupBinding(deviceHand, ActionCode.Thumbstick, rightPadPerformed);
         }
         private protected void OnDestroy()
         {
@@ -145,18 +139,11 @@ namespace BacklineVR.Interaction
                 OnTriggerUp?.Invoke(handSide);
             }
         }
-        private void OnRightPadUpdated(CallbackContext context)
-        {
-            var padValue = context.ReadValue<Vector2>();
-            var cardinalized = GetCardinalDirection(padValue);
-            var rotateY = _snapTurnAngle * cardinalized.x;
-            OnRotate?.Invoke(new Vector3(0, rotateY, 0));
-            OnControlPad?.Invoke(padValue);
-        }
-        private void OnLeftPadUpdated(CallbackContext context)
+        private void OnPadUpdated(HandSide hand, CallbackContext context)
         {
             var translation = context.ReadValue<Vector2>();
-            OnTranslate?.Invoke(new Vector3(translation.x, 0, translation.y));
+            var cardinalized = GetCardinalDirection(translation);
+            OnControlPad?.Invoke(hand, cardinalized);
         }
         private void OnPositionUpdated(HandSide hand, CallbackContext context)
         {

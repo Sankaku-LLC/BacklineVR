@@ -33,6 +33,7 @@ namespace BacklineVR.Interaction
             provider.OnGripUp += OnGripUp;
             provider.OnTriggerDown += OnTriggerDown;
             provider.OnTriggerUp += OnTriggerUp;
+            provider.OnControlPad += OnControlPad;
         }
 
         public override void Unsubscribe(InputProvider provider)
@@ -43,6 +44,7 @@ namespace BacklineVR.Interaction
             provider.OnGripUp -= OnGripUp;
             provider.OnTriggerDown -= OnTriggerDown;
             provider.OnTriggerUp -= OnTriggerUp;
+            provider.OnControlPad -= OnControlPad;
         }
 
         private protected override void OnGripDown(HandSide side, float amount)
@@ -75,7 +77,7 @@ namespace BacklineVR.Interaction
         {
             //_symbolApp.Save(SymbolPool.Curse, _spellNames[0], cast);
             //_spellNames.RemoveAt(0);
-            itemCode = side == Dominant ? "ThrowableItemDummy" : "StaffOfHealingWord";
+            itemCode = side == Dominant ? "ThrowableItemDummy" : "StaffOfScorchingRay";
             return true;
 
             var pool = side == Dominant ? SymbolPool.ThrowableItem : SymbolPool.MagicItem;
@@ -112,6 +114,9 @@ namespace BacklineVR.Interaction
                 return;
             }
             var wasSuccessful = _grabCasters[side].TryEndStroke();//Use this to trigger preview
+        }
+        private protected override void OnControlPad(HandSide side, Vector2 position)
+        {
         }
     }
 }

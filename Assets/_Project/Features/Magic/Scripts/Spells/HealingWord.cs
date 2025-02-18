@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace BacklineVR.Items.Magic
+namespace BacklineVR.Magic
 {
     /// <summary>
     /// This 3-entity targeting spell will heal X health amongst the selected targets
