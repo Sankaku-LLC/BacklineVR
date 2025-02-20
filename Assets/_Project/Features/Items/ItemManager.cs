@@ -8,22 +8,24 @@ using System.Linq;
 using UnityEngine;
 namespace BacklineVR.Items
 {
+    public enum ItemCategory { Equipment = 0, Item = 1, Scrolls = 2 }
     /// <summary>
     /// Inventory system manager
     /// </summary>
     public class ItemManager : MonoBehaviour, IGlobalComponent
     {
-        
-
-        //Temporary method of storing list of all items templates that can be spawned
+        //Temporary method of storing list of all items templates that can be spawned. Will be list of prefabs, maybe a scriptableObject
         [SerializeField]
-        private List<GameObject> _itemCatalog;
+        private List<GameObject> _catalog;
 
         //Temporary method of storing what items the player had at start
         [SerializeField]
-        private List<ItemFrequencyPair<string>> _throwableItems;
+        private List<ItemFrequencyPair<string>> _equipment;
         [SerializeField]
-        private List<ItemFrequencyPair<string>> _magicItems;
+        private List<ItemFrequencyPair<string>> _items;
+        [SerializeField]
+        private List<ItemFrequencyPair<string>> _scrolls;
+
 
         //List of player item codes and their frequency, populated at runtime
         private readonly Dictionary<string, int> _inventory = new Dictionary<string, int>(32);
@@ -34,7 +36,7 @@ namespace BacklineVR.Items
 
         public void OnInitialize()
         {
-            foreach(var item in _itemCatalog)
+            foreach(var item in _catalog)
             {
                 _itemTemplates.Add(item.GetComponent<Item>().GetCode(), item);
             }
@@ -42,13 +44,27 @@ namespace BacklineVR.Items
 
         public void OnStart()
         {
-            foreach(var item in _throwableItems)
+            foreach(var item in _items)
             {
                 _inventory.Add(item.Item, item.Frequency);
             }
-            foreach(var item in _magicItems)
+            foreach(var item in _scrolls)
             {
                 _inventory.Add(item.Item, item.Frequency);
+            }
+        }
+        public List<ItemFrequencyPair<string>> GetItemsOfCategory(ItemCategory category)
+        {
+            switch (category)
+            {
+                case ItemCategory.Equipment:
+                    return _equipment;
+                case ItemCategory.Item:
+                    return _items;
+                case ItemCategory.Scrolls:
+                    return _scrolls;
+                default:
+                    return null;
             }
         }
         public bool TryGetItem(string itemCode, out Item item)

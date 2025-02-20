@@ -1,4 +1,7 @@
+using BacklineVR.Core;
 using BacklineVR.Interaction;
+using BacklineVR.Items;
+using CurseVR.Director;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +16,10 @@ namespace BacklineVR.Equipment
     [RequireComponent(typeof(Holdable))]
     public class Holster : MonoBehaviour
     {
+        [SerializeField]
+        private ItemCategory _slotCategory;
         private Holdable _interactable;
+        private ItemManager _itemManager;
         private void Awake()
         {
             _interactable = GetComponent<Holdable>();
@@ -21,6 +27,11 @@ namespace BacklineVR.Equipment
             _interactable.OnRelease += OnRelease;
             _interactable.OnStartHover += OnStartHover;
             _interactable.OnStopHover += OnStopHover;
+        }
+        private void Start()
+        {
+           _itemManager = GlobalDirector.Get<ItemManager>();
+
         }
         public void OnGrab()
         {
