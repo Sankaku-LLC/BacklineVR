@@ -17,6 +17,8 @@ namespace BacklineVR.Equipment
     public class Holster : MonoBehaviour
     {
         [SerializeField]
+        private ItemListDisplay _display;
+        [SerializeField]
         private ItemCategory _slotCategory;
         private Holdable _interactable;
         private ItemManager _itemManager;
@@ -31,16 +33,19 @@ namespace BacklineVR.Equipment
         private void Start()
         {
            _itemManager = GlobalDirector.Get<ItemManager>();
-
+            OnGrab();
         }
         public void OnGrab()
         {
+            _display.Show(_itemManager.GetItemsOfCategory(_slotCategory));
             Debug.LogError("Grabbed holster " + transform.name);
         }
         public void OnRelease()
         {
             Debug.LogError("Released holster " + transform.name);
         }
+        //below are used for storage
+
         public void OnStartHover()
         {
             //Show grab UI

@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BacklineVR.Core;
+using CurseVR.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +30,10 @@ public class ItemListDisplay : MonoBehaviour
     private bool _moveBack;
 
     [SerializeField]
-    private Transform[] _options;
+    private GameObject _listParent;
+    [SerializeField]
+    private GameObject _entryPrefab;
+
 
     /// <summary>
     /// Implement colors for disable/enable/ active indication, and controlling if you can move on
@@ -38,6 +44,8 @@ public class ItemListDisplay : MonoBehaviour
     /// </summary>
     [SerializeField]
     private float _scrollAnimationRate = 0.5f;
+    [SerializeField]
+    private float _scale = 1;
     private float _curIdx;
 
     [SerializeField]
@@ -47,24 +55,36 @@ public class ItemListDisplay : MonoBehaviour
     private bool _isHorizontal = true;
 
     private Coroutine _animatedScroll;
+    private readonly List<GameObject> _entries = new List<GameObject>(64);
+    private readonly List<Transform> _options = new List<Transform>(64);
 
     public bool CanMoveNext { get; private set; }
     public bool CanMoveBack { get; private set; }
 
-    // Start is called before the first frame update
-    private void Start()
+    public void Show(List<ItemFrequencyPair<string>> entries)
     {
+        foreach (var entry in entries)
+        {
+            var spawnedUIGroup = Instantiate(_entryPrefab, _listParent.transform).GetComponent<UIGroup>();
+            spawnedUIGroup.Initialize();
+            spawnedUIGroup.Set("ItemName", entry.Item);
+            spawnedUIGroup.Set("ItemCount", entry.Frequency + "");
+            spawnedUIGroup.gameObject.name = entry.Item;
+            _entries.Add(spawnedUIGroup.gameObject);
+            _options.Add(spawnedUIGroup.transform);
+        }
         CanMoveNext = true;
         CanMoveBack = true;
         //hardcoded because it starts at the center always
-        _curIdx = _options.Length / 2f;
+        _curIdx = _options.Count / 2f;
+
         InitializeBounds();
         SetIdx(Mathf.RoundToInt(_curIdx));
         Scroll();
     }
     private void InitializeBounds()
     {
-        for (int i = 0; i < _options.Length; i++)
+        for (int i = 0; i < _options.Count; i++)
         {
             float t = Mathf.Abs(i - _curIdx);
             if (t > _windowSize)
@@ -110,28 +130,15 @@ public class ItemListDisplay : MonoBehaviour
         {
             return;
         }
-        _targetIdx = Mathf.Clamp(Mathf.RoundToInt(idx), 0, _options.Length - 1);
+        _targetIdx = Mathf.Clamp(Mathf.RoundToInt(idx), 0, _options.Count - 1);
 
-        if (_targetIdx == _options.Length - 1)
-            CanMoveNext = false;
-        else if (_targetIdx == 0)
-            CanMoveBack = false;
-        else
-        {
-            CanMoveBack = true;
-            CanMoveNext = true;
-        }
+        CanMoveNext = !(_targetIdx == _options.Count - 1);
+        CanMoveBack = !(_targetIdx == 0);
 
         if (_animatedScroll == null)
         {
             _animatedScroll = StartCoroutine(DoAnimatedScroll());
         }
-    }
-    public void OnCancel()
-    {
-        _targetIdx = 0;
-        _curIdx = _options.Length / 2;
-        Scroll();
     }
     private IEnumerator DoAnimatedScroll()
     {
@@ -156,13 +163,13 @@ public class ItemListDisplay : MonoBehaviour
         Scroll();
         _animatedScroll = null;
     }
-  
-    
+
+
     private void Scroll()
     {
         var isAdding = _curIdx < _targetIdx;
         var lowerBound = (int)Mathf.Max(0, _curIdx - _windowSize + 1);
-        var upperBound = (int)Mathf.Min(_options.Length - 1, _curIdx + _windowSize);
+        var upperBound = (int)Mathf.Min(_options.Count - 1, _curIdx + _windowSize);
         for (int i = lowerBound; i <= upperBound; i++)
         {
             float t = i - _curIdx;
@@ -180,14 +187,14 @@ public class ItemListDisplay : MonoBehaviour
             //{
             //    _options[i].gameObject.SetActive(true);
             //}
-            _options[i].localPosition = _isHorizontal ? new Vector3(sign * xPos, 0, zPos) : new Vector3(0, sign * xPos, zPos);
-            _options[i].localScale = Vector3.one * scale;
+            _options[i].localPosition = _scale * (_isHorizontal ? new Vector3(sign * xPos, 0, zPos) : new Vector3(0, sign * xPos, zPos));
+            _options[i].localScale = Vector3.one * scale * _scale;
         }
-        if(lowerBound > 0)
+        if (lowerBound > 0)
         {
             _options[lowerBound - 1].gameObject.SetActive(!isAdding);
         }
-        if(upperBound < _options.Length - 1)
+        if (upperBound < _options.Count - 1)
         {
             _options[upperBound + 1].gameObject.SetActive(isAdding);
         }
